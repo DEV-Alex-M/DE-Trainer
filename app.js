@@ -55,8 +55,17 @@ function applyTheme(theme) {
   if (toggle) toggle.textContent = theme === "dark" ? "☀ Light" : "☾ Dark";
 }
 
-function toggleTheme() {
+function toggleTheme(event) {
+  if (event) event.preventDefault();
   applyTheme(document.body.classList.contains("dark") ? "light" : "dark");
+}
+
+function bindThemeToggle() {
+  const toggle = $("themeToggle");
+  if (!toggle) return;
+  toggle.disabled = false;
+  toggle.style.pointerEvents = "auto";
+  toggle.addEventListener("click", toggleTheme);
 }
 
 function normalize(value) {
@@ -598,7 +607,7 @@ function init() {
   const savedTheme = localStorage.getItem("deTrainerTheme");
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
-  $("themeToggle").addEventListener("click", toggleTheme);
+  bindThemeToggle();
 
   bindSpecialCharacterButtons();
   bindTabs();
