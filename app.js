@@ -80,6 +80,24 @@ function normalize(value) {
     .trim();
 }
 
+function normalizeForCaseCheck(value) {
+  return String(value || "")
+    .replace(/[.,!?]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function hasCapitalizationIssue(answer, expected) {
+  const answerCase = normalizeForCaseCheck(answer);
+  const expectedCase = normalizeForCaseCheck(expected);
+  if (!answerCase || !expectedCase) return false;
+  return answerCase !== expectedCase && answerCase.toLocaleLowerCase("de-DE") === expectedCase.toLocaleLowerCase("de-DE");
+}
+
+function nounCapitalizationReminder() {
+  return "German nouns are always capitalized.";
+}
+
 function filtered(items) {
   const level = $("levelFilter") ? $("levelFilter").value : "all";
   const category = $("categoryFilter") ? $("categoryFilter").value : "all";
@@ -143,13 +161,14 @@ function fullWordAnswer(word) {
   return word.article ? `${word.article} ${word.de}` : word.de;
 }
 
-function recordWord(word, correct, articleMissing = false, articleWrong = false) {
+function recordWord(word, correct, articleMissing = false, articleWrong = false, capitalizationMistake = false) {
   const id = String(word.id);
-  const item = progress.words[id] || { correct: 0, wrong: 0, articleMissing: 0, articleWrong: 0, lastSeen: "" };
+  const item = progress.words[id] || { correct: 0, wrong: 0, articleMissing: 0, articleWrong: 0, capitalizationMistakes: 0, lastSeen: "" };
   if (correct) item.correct += 1;
   else item.wrong += 1;
   if (articleMissing) item.articleMissing += 1;
   if (articleWrong) item.articleWrong += 1;
+  if (capitalizationMistake) item.capitalizationMistakes = (item.capitalizationMistakes || 0) + 1;
   item.lastSeen = todayKey();
   progress.words[id] = item;
   markPracticeMinute();
@@ -176,45 +195,68 @@ function showWord() {
 }
 
 function splitArticleAnswer(value) {
-  const parts = normalize(value).split(" ");
-  if (parts.length < 2) return { article: "", word: normalize(value) };
-  return { article: parts[0], word: parts.slice(1).join(" ") };
+  const rawParts = String(value || "").trim().replace(/\s+/g, " ").split(" ").filter(Boolean);
+  const normalizedParts = normalize(value).split(" ").filter(Boolean);
+  if (normalizedParts.length < 2) {
+    return { article: "", word: normalize(value), rawWord: String(value || "").trim() };
+  }
+  return {
+    article: normalizedParts[0],
+    word: normalizedParts.slice(1).join(" "),
+    rawWord: rawParts.slice(1).join(" ")
+  };
 }
 
 function checkWord() {
   if (!currentWord) return;
   const input = $("wordAnswer");
-  const answer = normalize(input.value);
+  const rawAnswer = input.value;
+  const answer = normalize(rawAnswer);
   const possible = acceptedWordAnswers(currentWord).map(normalize);
-  const fullAnswer = normalize(fullWordAnswer(currentWord));
+  const fullAnswerText = fullWordAnswer(currentWord);
+  const fullAnswer = normalize(fullAnswerText);
   const feedback = $("wordFeedback");
 
   if (answer === fullAnswer) {
-    feedback.textContent = `Correct: ${fullWordAnswer(currentWord)}`;
-    feedback.className = "feedback good";
-    recordWord(currentWord, true, false, false);
+    const capitalizationIssue = hasCapitalizationIssue(rawAnswer, fullAnswerText);
+    if (capitalizationIssue && currentWord.type === "noun") {
+      feedback.innerHTML = `Correct word, but remember capitalization.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}<br>${nounCapitalizationReminder()}`;
+      feedback.className = "feedback warn";
+      recordWord(currentWord, true, false, false, true);
+    } else {
+      feedback.textContent = `Correct: ${fullAnswerText}`;
+      feedback.className = "feedback good";
+      recordWord(currentWord, true, false, false, false);
+    }
   } else if (possible.includes(answer)) {
-    feedback.textContent = `Correct word, article missing: ${fullWordAnswer(currentWord)}`;
+    const capitalizationIssue = hasCapitalizationIssue(rawAnswer, currentWord.de);
+    const extra = capitalizationIssue && currentWord.type === "noun" ? ` ${nounCapitalizationReminder()}` : "";
+    feedback.textContent = `Correct word, article missing: ${fullAnswerText}.${extra}`;
     feedback.className = "feedback warn";
-    recordWord(currentWord, true, true, false);
+    recordWord(currentWord, true, true, false, capitalizationIssue && currentWord.type === "noun");
   } else if (currentWord.article) {
     const given = splitArticleAnswer(input.value);
     const correctWordOnly = normalize(currentWord.de);
     const correctPlural = normalize(currentWord.plural || "");
     const wordIsCorrect = given.word === correctWordOnly || (correctPlural && given.word === correctPlural);
     if (wordIsCorrect && given.article && given.article !== normalize(currentWord.article)) {
-      feedback.textContent = `Correct word, wrong article. Correct: ${fullWordAnswer(currentWord)}`;
+      const capitalizationIssue = currentWord.type === "noun" && hasCapitalizationIssue(given.rawWord, currentWord.de);
+      if (capitalizationIssue) {
+        feedback.innerHTML = `Correct word, but two issues found:<br><br>• Wrong article<br>• Noun should be capitalized<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}`;
+      } else {
+        feedback.innerHTML = `Correct word, wrong article.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}`;
+      }
       feedback.className = "feedback warn";
-      recordWord(currentWord, true, false, true);
+      recordWord(currentWord, true, false, true, capitalizationIssue);
     } else {
-      feedback.textContent = `Not quite. Correct: ${fullWordAnswer(currentWord)}`;
+      feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
       feedback.className = "feedback bad";
-      recordWord(currentWord, false, false, false);
+      recordWord(currentWord, false, false, false, false);
     }
   } else {
-    feedback.textContent = `Not quite. Correct: ${fullWordAnswer(currentWord)}`;
+    feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
     feedback.className = "feedback bad";
-    recordWord(currentWord, false, false, false);
+    recordWord(currentWord, false, false, false, false);
   }
   input.disabled = true;
 }
@@ -230,12 +272,20 @@ function showSentence() {
 
 function checkSentence() {
   if (!currentSentence) return;
-  const answer = normalize($("sentenceAnswer").value);
+  const rawAnswer = $("sentenceAnswer").value;
+  const answer = normalize(rawAnswer);
   const correct = normalize(currentSentence.de);
   const feedback = $("sentenceFeedback");
   const isCorrect = answer === correct;
-  feedback.textContent = isCorrect ? `Correct: ${currentSentence.de}` : `Not quite. Correct: ${currentSentence.de}`;
-  feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  const capitalizationIssue = isCorrect && hasCapitalizationIssue(rawAnswer, currentSentence.de);
+
+  if (isCorrect && capitalizationIssue) {
+    feedback.innerHTML = `Correct sentence, but check capitalization.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(currentSentence.de)}<br>${nounCapitalizationReminder()}`;
+    feedback.className = "feedback warn";
+  } else {
+    feedback.textContent = isCorrect ? `Correct: ${currentSentence.de}` : `Not quite. Correct: ${currentSentence.de}`;
+    feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  }
   recordSentence("sentences", currentSentence, isCorrect);
   $("sentenceAnswer").disabled = true;
 }
@@ -492,8 +542,14 @@ function checkGrammar() {
     return;
   }
 
+  const typedCapitalizationIssue = !isChoice && isCorrect && [currentGrammar.answer, ...(currentGrammar.accepted || [])]
+    .some(expected => hasCapitalizationIssue(given, expected));
+
   feedback.innerHTML = grammarFeedbackHtml(currentGrammar, isCorrect);
-  feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  if (typedCapitalizationIssue) {
+    feedback.innerHTML += `<div class="grammar-feedback-note">${escapeHtml(nounCapitalizationReminder())}</div>`;
+  }
+  feedback.className = typedCapitalizationIssue ? "feedback warn" : (isCorrect ? "feedback good" : "feedback bad");
   recordGrammar(currentGrammar, isCorrect);
   $("grammarAnswer").disabled = true;
   document.querySelectorAll(".grammar-option").forEach(button => button.disabled = true);
@@ -507,14 +563,22 @@ function revealGrammar() {
 }
 
 function wordStats(word) {
-  return progress.words[String(word.id)] || { correct: 0, wrong: 0, articleMissing: 0, articleWrong: 0, lastSeen: "" };
+  const stats = progress.words[String(word.id)] || {};
+  return {
+    correct: stats.correct || 0,
+    wrong: stats.wrong || 0,
+    articleMissing: stats.articleMissing || 0,
+    articleWrong: stats.articleWrong || 0,
+    capitalizationMistakes: stats.capitalizationMistakes || 0,
+    lastSeen: stats.lastSeen || ""
+  };
 }
 
 function difficultWords() {
   return data.words
     .map(word => ({ word, stats: wordStats(word) }))
-    .filter(item => item.stats.wrong > 0 || item.stats.articleMissing > 0 || item.stats.articleWrong > 0)
-    .sort((a, b) => (b.stats.wrong + b.stats.articleMissing + b.stats.articleWrong) - (a.stats.wrong + a.stats.articleMissing + a.stats.articleWrong));
+    .filter(item => item.stats.wrong > 0 || item.stats.articleMissing > 0 || item.stats.articleWrong > 0 || item.stats.capitalizationMistakes > 0)
+    .sort((a, b) => (b.stats.wrong + b.stats.articleMissing + b.stats.articleWrong + b.stats.capitalizationMistakes) - (a.stats.wrong + a.stats.articleMissing + a.stats.articleWrong + a.stats.capitalizationMistakes));
 }
 
 function renderStats() {
@@ -535,7 +599,7 @@ function searchMatches(text, query) {
 function renderDifficultList() {
   const query = $("difficultSearch") ? $("difficultSearch").value : "";
   const items = difficultWords().filter(({ word, stats }) => {
-    const haystack = `${word.en} ${fullWordAnswer(word)} ${word.type} wrong ${stats.wrong} article missing ${stats.articleMissing} wrong article ${stats.articleWrong || 0}`;
+    const haystack = `${word.en} ${fullWordAnswer(word)} ${word.type} wrong ${stats.wrong} article missing ${stats.articleMissing} wrong article ${stats.articleWrong || 0} capitalization ${stats.capitalizationMistakes || 0}`;
     return searchMatches(haystack, query);
   });
   if (!items.length) {
@@ -544,7 +608,7 @@ function renderDifficultList() {
   }
   const rows = [`<div class="row header-row"><b>English</b><b>German</b><b>Issues</b><b>Last seen</b></div>`];
   items.forEach(({ word, stats }) => {
-    const issues = [`Wrong word: ${stats.wrong}`, `Article missing: ${stats.articleMissing}`, `Wrong article: ${stats.articleWrong || 0}`].join(" • ");
+    const issues = [`Wrong word: ${stats.wrong}`, `Article missing: ${stats.articleMissing}`, `Wrong article: ${stats.articleWrong || 0}`, `Capitalization: ${stats.capitalizationMistakes || 0}`].join(" • ");
     rows.push(`<div class="row"><span>${word.en}</span><span>${fullWordAnswer(word)}</span><span>${issues}</span><span>${stats.lastSeen || "-"}</span></div>`);
   });
   $("difficultList").innerHTML = rows.join("");
