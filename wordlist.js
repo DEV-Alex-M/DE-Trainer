@@ -3202,7 +3202,1491 @@ window.LEARNING_DATA = {
       "en": "The appointment was moved to next week.",
       "de": "Der Termin wurde auf nächste Woche verschoben.",
       "level": "B1",
+      "category": "work",
+      "formality": "neutral"
+    },
+    {
+      "id": 157,
+      "en": "How are you?",
+      "de": "Wie geht es dir?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Use with friends, family, children, or people you know well."
+    },
+    {
+      "id": 158,
+      "en": "How are you?",
+      "de": "Wie geht es Ihnen?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "formal",
+      "context": "Use with strangers, officials, customers, or in polite situations."
+    },
+    {
+      "id": 159,
+      "en": "Can you help me?",
+      "de": "Kannst du mir helfen?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Asking one familiar person."
+    },
+    {
+      "id": 160,
+      "en": "Can you help me?",
+      "de": "Können Sie mir helfen?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "formal",
+      "context": "Asking politely or speaking to someone you do not know."
+    },
+    {
+      "id": 161,
+      "en": "Where do you live?",
+      "de": "Wo wohnst du?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Talking to one familiar person."
+    },
+    {
+      "id": 162,
+      "en": "Where do you live?",
+      "de": "Wo wohnen Sie?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "formal",
+      "context": "Formal Sie form."
+    },
+    {
+      "id": 163,
+      "en": "What would you like to drink?",
+      "de": "Was möchtest du trinken?",
+      "level": "A1",
+      "category": "restaurant",
+      "formality": "informal",
+      "context": "Casual question to one familiar person."
+    },
+    {
+      "id": 164,
+      "en": "What would you like to drink?",
+      "de": "Was möchten Sie trinken?",
+      "level": "A1",
+      "category": "restaurant",
+      "formality": "formal",
+      "context": "Waiter/customer or polite Sie form."
+    },
+    {
+      "id": 165,
+      "en": "Do you have a table for two people?",
+      "de": "Haben Sie einen Tisch für zwei Personen?",
+      "level": "A1",
+      "category": "restaurant",
+      "formality": "formal",
+      "context": "Polite request in a restaurant."
+    },
+    {
+      "id": 166,
+      "en": "Do you have time tomorrow?",
+      "de": "Hast du morgen Zeit?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Asking a friend or familiar person."
+    },
+    {
+      "id": 167,
+      "en": "Do you have time tomorrow?",
+      "de": "Haben Sie morgen Zeit?",
+      "level": "A1",
+      "category": "work",
+      "formality": "formal",
+      "context": "Polite or workplace question."
+    },
+    {
+      "id": 168,
+      "en": "Please take a seat.",
+      "de": "Setz dich bitte.",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Speaking to one familiar person."
+    },
+    {
+      "id": 169,
+      "en": "Please take a seat.",
+      "de": "Setzen Sie sich bitte.",
+      "level": "A1",
+      "category": "work",
+      "formality": "formal",
+      "context": "Polite invitation to sit down."
+    },
+    {
+      "id": 170,
+      "en": "Can you repeat that?",
+      "de": "Kannst du das wiederholen?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Casual request to one familiar person."
+    },
+    {
+      "id": 171,
+      "en": "Can you repeat that?",
+      "de": "Können Sie das wiederholen?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "formal",
+      "context": "Polite request to repeat something."
+    },
+    {
+      "id": 172,
+      "en": "I will call you later.",
+      "de": "Ich rufe dich später an.",
+      "level": "A2",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Talking to one familiar person."
+    },
+    {
+      "id": 173,
+      "en": "I will call you later.",
+      "de": "Ich rufe Sie später an.",
+      "level": "A2",
+      "category": "work",
+      "formality": "formal",
+      "context": "Formal Sie object form."
+    },
+    {
+      "id": 174,
+      "en": "I would like to ask you something.",
+      "de": "Ich möchte dich etwas fragen.",
+      "level": "A2",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Casual direct question."
+    },
+    {
+      "id": 175,
+      "en": "I would like to ask you something.",
+      "de": "Ich möchte Sie etwas fragen.",
+      "level": "A2",
+      "category": "work",
+      "formality": "formal",
+      "context": "Polite direct question."
+    },
+    {
+      "id": 176,
+      "en": "Are you coming with me?",
+      "de": "Kommst du mit?",
+      "level": "A1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Inviting one familiar person."
+    },
+    {
+      "id": 177,
+      "en": "Are you coming with me?",
+      "de": "Kommen Sie mit?",
+      "level": "A1",
+      "category": "travel",
+      "formality": "formal",
+      "context": "Polite question to one or more people."
+    },
+    {
+      "id": 178,
+      "en": "Could you show me the way?",
+      "de": "Könnten Sie mir den Weg zeigen?",
+      "level": "A2",
+      "category": "travel",
+      "formality": "formal",
+      "context": "Polite request for directions."
+    },
+    {
+      "id": 179,
+      "en": "Can you show me the way?",
+      "de": "Kannst du mir den Weg zeigen?",
+      "level": "A2",
+      "category": "travel",
+      "formality": "informal",
+      "context": "Casual request for directions."
+    },
+    {
+      "id": 180,
+      "en": "Please send me the address.",
+      "de": "Schick mir bitte die Adresse.",
+      "level": "A2",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Casual request."
+    },
+    {
+      "id": 181,
+      "en": "Please send me the address.",
+      "de": "Schicken Sie mir bitte die Adresse.",
+      "level": "A2",
+      "category": "work",
+      "formality": "formal",
+      "context": "Polite/formal request."
+    },
+    {
+      "id": 182,
+      "en": "I am sorry, I did not understand you.",
+      "de": "Entschuldigung, ich habe dich nicht verstanden.",
+      "level": "A2",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Speaking to one familiar person."
+    },
+    {
+      "id": 183,
+      "en": "I am sorry, I did not understand you.",
+      "de": "Entschuldigung, ich habe Sie nicht verstanden.",
+      "level": "A2",
+      "category": "daily",
+      "formality": "formal",
+      "context": "Polite Sie form."
+    },
+    {
+      "id": 184,
+      "en": "Could you give me the receipt, please?",
+      "de": "Könnten Sie mir bitte den Kassenbon geben?",
+      "level": "A2",
+      "category": "shopping",
+      "formality": "formal",
+      "context": "Polite request in a shop."
+    },
+    {
+      "id": 185,
+      "en": "Can you give me the receipt?",
+      "de": "Kannst du mir den Kassenbon geben?",
+      "level": "A2",
+      "category": "shopping",
+      "formality": "informal",
+      "context": "Casual request to one familiar person."
+    },
+    {
+      "id": 186,
+      "en": "I would like to speak with you about the appointment.",
+      "de": "Ich möchte mit Ihnen über den Termin sprechen.",
+      "level": "B1",
+      "category": "work",
+      "formality": "formal",
+      "context": "Formal workplace sentence."
+    },
+    {
+      "id": 187,
+      "en": "I would like to speak with you about the appointment.",
+      "de": "Ich möchte mit dir über den Termin sprechen.",
+      "level": "B1",
+      "category": "daily",
+      "formality": "informal",
+      "context": "Informal sentence with dir."
+    },
+    {
+      "id": 188,
+      "en": "Can you help us?",
+      "de": "Kannst du uns helfen?",
+      "level": "A1",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 189,
+      "en": "Can you help them?",
+      "de": "Kannst du ihnen helfen?",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 190,
+      "en": "Can you help him?",
+      "de": "Kannst du ihm helfen?",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 191,
+      "en": "Can you help her?",
+      "de": "Kannst du ihr helfen?",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 192,
+      "en": "I see you tomorrow.",
+      "de": "Ich sehe dich morgen.",
+      "level": "A1",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 193,
+      "en": "We see you all tomorrow.",
+      "de": "Wir sehen euch morgen.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 194,
+      "en": "She sees him at the station.",
+      "de": "Sie sieht ihn am Bahnhof.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 195,
+      "en": "He sees her in the supermarket.",
+      "de": "Er sieht sie im Supermarkt.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 196,
+      "en": "They see us in front of the hotel.",
+      "de": "Sie sehen uns vor dem Hotel.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 197,
+      "en": "I give you the key.",
+      "de": "Ich gebe dir den Schlüssel.",
+      "level": "A2",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 198,
+      "en": "She gives him the receipt.",
+      "de": "Sie gibt ihm die Quittung.",
+      "level": "A2",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 199,
+      "en": "He gives her the address.",
+      "de": "Er gibt ihr die Adresse.",
+      "level": "A2",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 200,
+      "en": "We give you all the tickets.",
+      "de": "Wir geben euch die Fahrkarten.",
+      "level": "A2",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 201,
+      "en": "They give us the room number.",
+      "de": "Sie geben uns die Zimmernummer.",
+      "level": "A2",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 202,
+      "en": "Please give me the bill.",
+      "de": "Geben Sie mir bitte die Rechnung.",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 203,
+      "en": "Please give us two glasses.",
+      "de": "Geben Sie uns bitte zwei Gläser.",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 204,
+      "en": "I bring you the menu.",
+      "de": "Ich bringe dir die Speisekarte.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 205,
+      "en": "The waiter brings us the bill.",
+      "de": "Der Kellner bringt uns die Rechnung.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 206,
+      "en": "The doctor gives her a prescription.",
+      "de": "Der Arzt gibt ihr ein Rezept.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 207,
+      "en": "The pharmacist explains the medicine to him.",
+      "de": "Die Apothekerin erklärt ihm das Medikament.",
+      "level": "B1",
+      "category": "health"
+    },
+    {
+      "id": 208,
+      "en": "Our colleague sends us the document.",
+      "de": "Unsere Kollegin schickt uns das Dokument.",
+      "level": "B1",
       "category": "work"
+    },
+    {
+      "id": 209,
+      "en": "I explain the problem to you.",
+      "de": "Ich erkläre dir das Problem.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 210,
+      "en": "Can you explain the way to us?",
+      "de": "Kannst du uns den Weg erklären?",
+      "level": "A2",
+      "category": "directions"
+    },
+    {
+      "id": 211,
+      "en": "Can you explain the way to me?",
+      "de": "Können Sie mir den Weg erklären?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 212,
+      "en": "I go to the bakery.",
+      "de": "Ich gehe zur Bäckerei.",
+      "level": "A1",
+      "category": "prepositions"
+    },
+    {
+      "id": 213,
+      "en": "You go to the supermarket.",
+      "de": "Du gehst zum Supermarkt.",
+      "level": "A1",
+      "category": "prepositions"
+    },
+    {
+      "id": 214,
+      "en": "He goes to the doctor.",
+      "de": "Er geht zum Arzt.",
+      "level": "A1",
+      "category": "health"
+    },
+    {
+      "id": 215,
+      "en": "She goes to the pharmacy.",
+      "de": "Sie geht zur Apotheke.",
+      "level": "A1",
+      "category": "health"
+    },
+    {
+      "id": 216,
+      "en": "We go to the office.",
+      "de": "Wir gehen ins Büro.",
+      "level": "A1",
+      "category": "work"
+    },
+    {
+      "id": 217,
+      "en": "You all go to the restaurant.",
+      "de": "Ihr geht ins Restaurant.",
+      "level": "A1",
+      "category": "restaurant"
+    },
+    {
+      "id": 218,
+      "en": "They go to the hotel.",
+      "de": "Sie gehen zum Hotel.",
+      "level": "A1",
+      "category": "hotel"
+    },
+    {
+      "id": 219,
+      "en": "Please go to the reception.",
+      "de": "Gehen Sie bitte zur Rezeption.",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 220,
+      "en": "I come from the office.",
+      "de": "Ich komme aus dem Büro.",
+      "level": "A1",
+      "category": "prepositions"
+    },
+    {
+      "id": 221,
+      "en": "You come from school.",
+      "de": "Du kommst aus der Schule.",
+      "level": "A1",
+      "category": "prepositions"
+    },
+    {
+      "id": 222,
+      "en": "He comes from the supermarket.",
+      "de": "Er kommt aus dem Supermarkt.",
+      "level": "A1",
+      "category": "prepositions"
+    },
+    {
+      "id": 223,
+      "en": "She comes from the pharmacy.",
+      "de": "Sie kommt aus der Apotheke.",
+      "level": "A1",
+      "category": "health"
+    },
+    {
+      "id": 224,
+      "en": "We come from the hotel.",
+      "de": "Wir kommen aus dem Hotel.",
+      "level": "A1",
+      "category": "hotel"
+    },
+    {
+      "id": 225,
+      "en": "You all come from the restaurant.",
+      "de": "Ihr kommt aus dem Restaurant.",
+      "level": "A1",
+      "category": "restaurant"
+    },
+    {
+      "id": 226,
+      "en": "They come from the train station.",
+      "de": "Sie kommen vom Bahnhof.",
+      "level": "A2",
+      "category": "transport"
+    },
+    {
+      "id": 227,
+      "en": "Do you come from Germany?",
+      "de": "Kommen Sie aus Deutschland?",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 228,
+      "en": "I drive to Berlin by train.",
+      "de": "Ich fahre mit dem Zug nach Berlin.",
+      "level": "A1",
+      "category": "transport"
+    },
+    {
+      "id": 229,
+      "en": "You drive to Munich by car.",
+      "de": "Du fährst mit dem Auto nach München.",
+      "level": "A1",
+      "category": "transport"
+    },
+    {
+      "id": 230,
+      "en": "He rides to work by bike.",
+      "de": "Er fährt mit dem Fahrrad zur Arbeit.",
+      "level": "A2",
+      "category": "transport"
+    },
+    {
+      "id": 231,
+      "en": "She goes to the city by bus.",
+      "de": "Sie fährt mit dem Bus in die Stadt.",
+      "level": "A2",
+      "category": "transport"
+    },
+    {
+      "id": 232,
+      "en": "We fly to Austria tomorrow.",
+      "de": "Wir fliegen morgen nach Österreich.",
+      "level": "A2",
+      "category": "travel"
+    },
+    {
+      "id": 233,
+      "en": "You all travel to Switzerland in July.",
+      "de": "Ihr reist im Juli in die Schweiz.",
+      "level": "A2",
+      "category": "travel"
+    },
+    {
+      "id": 234,
+      "en": "They are going to the airport by taxi.",
+      "de": "Sie fahren mit dem Taxi zum Flughafen.",
+      "level": "A2",
+      "category": "travel"
+    },
+    {
+      "id": 235,
+      "en": "Are you travelling to Hamburg today?",
+      "de": "Reisen Sie heute nach Hamburg?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 236,
+      "en": "I wait for the bus.",
+      "de": "Ich warte auf den Bus.",
+      "level": "A1",
+      "category": "transport"
+    },
+    {
+      "id": 237,
+      "en": "You wait for your friend.",
+      "de": "Du wartest auf deinen Freund.",
+      "level": "A2",
+      "category": "grammar-akkusative"
+    },
+    {
+      "id": 238,
+      "en": "He waits for his colleague.",
+      "de": "Er wartet auf seinen Kollegen.",
+      "level": "A2",
+      "category": "work"
+    },
+    {
+      "id": 239,
+      "en": "She waits for the train.",
+      "de": "Sie wartet auf den Zug.",
+      "level": "A1",
+      "category": "transport"
+    },
+    {
+      "id": 240,
+      "en": "We wait for you at the entrance.",
+      "de": "Wir warten am Eingang auf dich.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 241,
+      "en": "You all wait for us in front of the cinema.",
+      "de": "Ihr wartet vor dem Kino auf uns.",
+      "level": "A2",
+      "category": "grammar-pronouns"
+    },
+    {
+      "id": 242,
+      "en": "They wait for their luggage.",
+      "de": "Sie warten auf ihr Gepäck.",
+      "level": "A2",
+      "category": "travel"
+    },
+    {
+      "id": 243,
+      "en": "Please wait for the next train.",
+      "de": "Warten Sie bitte auf den nächsten Zug.",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 244,
+      "en": "I talk to the doctor about the pain.",
+      "de": "Ich spreche mit dem Arzt über die Schmerzen.",
+      "level": "B1",
+      "category": "health"
+    },
+    {
+      "id": 245,
+      "en": "You talk to your teacher about the exam.",
+      "de": "Du sprichst mit deiner Lehrerin über die Prüfung.",
+      "level": "B1",
+      "category": "education"
+    },
+    {
+      "id": 246,
+      "en": "He talks to his boss about the project.",
+      "de": "Er spricht mit seinem Chef über das Projekt.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 247,
+      "en": "She talks to her mother about the apartment.",
+      "de": "Sie spricht mit ihrer Mutter über die Wohnung.",
+      "level": "B1",
+      "category": "family"
+    },
+    {
+      "id": 248,
+      "en": "We talk to our neighbours about the noise.",
+      "de": "Wir sprechen mit unseren Nachbarn über den Lärm.",
+      "level": "B1",
+      "category": "home"
+    },
+    {
+      "id": 249,
+      "en": "You all talk to your friends about the trip.",
+      "de": "Ihr sprecht mit euren Freunden über die Reise.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 250,
+      "en": "They talk to the police about the accident.",
+      "de": "Sie sprechen mit der Polizei über den Unfall.",
+      "level": "B1",
+      "category": "emergency"
+    },
+    {
+      "id": 251,
+      "en": "Please talk to the manager about the problem.",
+      "de": "Sprechen Sie bitte mit dem Manager über das Problem.",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 252,
+      "en": "The phone is on the table.",
+      "de": "Das Handy liegt auf dem Tisch.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 253,
+      "en": "I put the phone on the table.",
+      "de": "Ich lege das Handy auf den Tisch.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 254,
+      "en": "Your jacket is hanging on the chair.",
+      "de": "Deine Jacke hängt am Stuhl.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 255,
+      "en": "You hang your jacket on the chair.",
+      "de": "Du hängst deine Jacke an den Stuhl.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 256,
+      "en": "The picture is hanging on the wall.",
+      "de": "Das Bild hängt an der Wand.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 257,
+      "en": "He hangs the picture on the wall.",
+      "de": "Er hängt das Bild an die Wand.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 258,
+      "en": "The shoes are under the bed.",
+      "de": "Die Schuhe stehen unter dem Bett.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 259,
+      "en": "She puts the shoes under the bed.",
+      "de": "Sie stellt die Schuhe unter das Bett.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 260,
+      "en": "The bag is behind the door.",
+      "de": "Die Tasche steht hinter der Tür.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 261,
+      "en": "We put the bag behind the door.",
+      "de": "Wir stellen die Tasche hinter die Tür.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 262,
+      "en": "The children are sitting in the garden.",
+      "de": "Die Kinder sitzen im Garten.",
+      "level": "A1",
+      "category": "location-movement"
+    },
+    {
+      "id": 263,
+      "en": "The children run into the garden.",
+      "de": "Die Kinder laufen in den Garten.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 264,
+      "en": "You all are standing in front of the house.",
+      "de": "Ihr steht vor dem Haus.",
+      "level": "A1",
+      "category": "location-movement"
+    },
+    {
+      "id": 265,
+      "en": "You all go in front of the house.",
+      "de": "Ihr geht vor das Haus.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 266,
+      "en": "The book is next to the laptop.",
+      "de": "Das Buch liegt neben dem Laptop.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 267,
+      "en": "They put the book next to the laptop.",
+      "de": "Sie legen das Buch neben den Laptop.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 268,
+      "en": "I am in the kitchen.",
+      "de": "Ich bin in der Küche.",
+      "level": "A1",
+      "category": "location-movement"
+    },
+    {
+      "id": 269,
+      "en": "She is sitting in the armchair.",
+      "de": "Sie sitzt im Sessel.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 270,
+      "en": "She sits down in the armchair.",
+      "de": "Sie setzt sich in den Sessel.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 271,
+      "en": "We are at the window.",
+      "de": "Wir stehen am Fenster.",
+      "level": "A1",
+      "category": "location-movement"
+    },
+    {
+      "id": 272,
+      "en": "We go to the window.",
+      "de": "Wir gehen ans Fenster.",
+      "level": "A2",
+      "category": "location-movement"
+    },
+    {
+      "id": 273,
+      "en": "I pay with the card.",
+      "de": "Ich bezahle mit der Karte.",
+      "level": "A1",
+      "category": "shopping"
+    },
+    {
+      "id": 274,
+      "en": "You pay in cash.",
+      "de": "Du bezahlst bar.",
+      "level": "A1",
+      "category": "shopping"
+    },
+    {
+      "id": 275,
+      "en": "He pays with his phone.",
+      "de": "Er bezahlt mit seinem Handy.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 276,
+      "en": "She pays for the coffee.",
+      "de": "Sie bezahlt den Kaffee.",
+      "level": "A1",
+      "category": "restaurant"
+    },
+    {
+      "id": 277,
+      "en": "We pay the bill together.",
+      "de": "Wir bezahlen die Rechnung zusammen.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 278,
+      "en": "You all pay at the checkout.",
+      "de": "Ihr bezahlt an der Kasse.",
+      "level": "A1",
+      "category": "shopping"
+    },
+    {
+      "id": 279,
+      "en": "They pay for the tickets online.",
+      "de": "Sie bezahlen die Fahrkarten online.",
+      "level": "A2",
+      "category": "transport"
+    },
+    {
+      "id": 280,
+      "en": "Do you pay by card?",
+      "de": "Bezahlen Sie mit Karte?",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 281,
+      "en": "I order a salad for my sister.",
+      "de": "Ich bestelle einen Salat für meine Schwester.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 282,
+      "en": "You order a soup for your father.",
+      "de": "Du bestellst eine Suppe für deinen Vater.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 283,
+      "en": "He orders a tea for his mother.",
+      "de": "Er bestellt einen Tee für seine Mutter.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 284,
+      "en": "She orders water for the children.",
+      "de": "Sie bestellt Wasser für die Kinder.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 285,
+      "en": "We reserve a table for four people.",
+      "de": "Wir reservieren einen Tisch für vier Personen.",
+      "level": "A2",
+      "category": "restaurant"
+    },
+    {
+      "id": 286,
+      "en": "You all reserve a room for the weekend.",
+      "de": "Ihr reserviert ein Zimmer für das Wochenende.",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "id": 287,
+      "en": "They reserve seats for the group.",
+      "de": "Sie reservieren Plätze für die Gruppe.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 288,
+      "en": "Would you like to reserve a table?",
+      "de": "Möchten Sie einen Tisch reservieren?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 289,
+      "en": "I am looking for a jacket for my daughter.",
+      "de": "Ich suche eine Jacke für meine Tochter.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 290,
+      "en": "You are looking for shoes for your son.",
+      "de": "Du suchst Schuhe für deinen Sohn.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 291,
+      "en": "He is looking for a present for his wife.",
+      "de": "Er sucht ein Geschenk für seine Frau.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 292,
+      "en": "She is looking for a book for her brother.",
+      "de": "Sie sucht ein Buch für ihren Bruder.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 293,
+      "en": "We are looking for a hotel near the station.",
+      "de": "Wir suchen ein Hotel in der Nähe vom Bahnhof.",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "id": 294,
+      "en": "You all are looking for a pharmacy in the city centre.",
+      "de": "Ihr sucht eine Apotheke in der Innenstadt.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 295,
+      "en": "They are looking for an apartment with a balcony.",
+      "de": "Sie suchen eine Wohnung mit Balkon.",
+      "level": "B1",
+      "category": "home"
+    },
+    {
+      "id": 296,
+      "en": "Are you looking for a smaller size?",
+      "de": "Suchen Sie eine kleinere Größe?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 297,
+      "en": "I have a meeting with my team.",
+      "de": "Ich habe eine Besprechung mit meinem Team.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 298,
+      "en": "You have a call with your customer.",
+      "de": "Du hast ein Telefonat mit deinem Kunden.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 299,
+      "en": "He has an appointment with the manager.",
+      "de": "Er hat einen Termin mit dem Manager.",
+      "level": "A2",
+      "category": "work"
+    },
+    {
+      "id": 300,
+      "en": "She has a problem with her computer.",
+      "de": "Sie hat ein Problem mit ihrem Computer.",
+      "level": "A2",
+      "category": "work"
+    },
+    {
+      "id": 301,
+      "en": "We have lunch with our colleagues.",
+      "de": "Wir essen mit unseren Kollegen zu Mittag.",
+      "level": "A2",
+      "category": "work"
+    },
+    {
+      "id": 302,
+      "en": "You all have a course with a new teacher.",
+      "de": "Ihr habt einen Kurs mit einer neuen Lehrerin.",
+      "level": "B1",
+      "category": "education"
+    },
+    {
+      "id": 303,
+      "en": "They have an interview with the company.",
+      "de": "Sie haben ein Gespräch mit der Firma.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 304,
+      "en": "Do you have an appointment with the doctor?",
+      "de": "Haben Sie einen Termin beim Arzt?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 305,
+      "en": "I have pain in my back.",
+      "de": "Ich habe Schmerzen im Rücken.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 306,
+      "en": "You have a cold since Monday.",
+      "de": "Du hast seit Montag eine Erkältung.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 307,
+      "en": "He has a fever in the evening.",
+      "de": "Er hat am Abend Fieber.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 308,
+      "en": "She has an appointment at the dentist tomorrow.",
+      "de": "Sie hat morgen einen Termin beim Zahnarzt.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 309,
+      "en": "We need medicine for the child.",
+      "de": "Wir brauchen ein Medikament für das Kind.",
+      "level": "A2",
+      "category": "health"
+    },
+    {
+      "id": 310,
+      "en": "You all need help with the form.",
+      "de": "Ihr braucht Hilfe mit dem Formular.",
+      "level": "A2",
+      "category": "office"
+    },
+    {
+      "id": 311,
+      "en": "They need information about health insurance.",
+      "de": "Sie brauchen Informationen über die Krankenversicherung.",
+      "level": "B1",
+      "category": "health"
+    },
+    {
+      "id": 312,
+      "en": "Do you need help with the application?",
+      "de": "Brauchen Sie Hilfe mit dem Antrag?",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 313,
+      "en": "I visit my parents on Sunday.",
+      "de": "Ich besuche meine Eltern am Sonntag.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 314,
+      "en": "You visit your grandmother in the hospital.",
+      "de": "Du besuchst deine Oma im Krankenhaus.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 315,
+      "en": "He visits his brother in Hamburg.",
+      "de": "Er besucht seinen Bruder in Hamburg.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 316,
+      "en": "She visits her aunt after work.",
+      "de": "Sie besucht ihre Tante nach der Arbeit.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 317,
+      "en": "We visit our friends at the weekend.",
+      "de": "Wir besuchen unsere Freunde am Wochenende.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 318,
+      "en": "You all visit your family during the holidays.",
+      "de": "Ihr besucht eure Familie in den Ferien.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 319,
+      "en": "They visit their grandparents in the village.",
+      "de": "Sie besuchen ihre Großeltern im Dorf.",
+      "level": "A2",
+      "category": "family"
+    },
+    {
+      "id": 320,
+      "en": "Are you visiting your relatives today?",
+      "de": "Besuchen Sie heute Ihre Verwandten?",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 321,
+      "en": "My brother gives me his car key.",
+      "de": "Mein Bruder gibt mir seinen Autoschlüssel.",
+      "level": "B1",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 322,
+      "en": "Your sister sends you her address.",
+      "de": "Deine Schwester schickt dir ihre Adresse.",
+      "level": "B1",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 323,
+      "en": "His mother buys him a jacket.",
+      "de": "Seine Mutter kauft ihm eine Jacke.",
+      "level": "B1",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 324,
+      "en": "Her father gives her a suitcase.",
+      "de": "Ihr Vater gibt ihr einen Koffer.",
+      "level": "B1",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 325,
+      "en": "Our teacher explains the rule to us.",
+      "de": "Unsere Lehrerin erklärt uns die Regel.",
+      "level": "B1",
+      "category": "grammar-dative"
+    },
+    {
+      "id": 326,
+      "en": "Your parents bring you all the passports.",
+      "de": "Eure Eltern bringen euch die Pässe.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 327,
+      "en": "Their neighbour shows them the apartment.",
+      "de": "Ihr Nachbar zeigt ihnen die Wohnung.",
+      "level": "B1",
+      "category": "home"
+    },
+    {
+      "id": 328,
+      "en": "Your assistant sends you the confirmation.",
+      "de": "Ihre Assistentin schickt Ihnen die Bestätigung.",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 329,
+      "en": "I ask you about the price.",
+      "de": "Ich frage dich nach dem Preis.",
+      "level": "A2",
+      "category": "shopping"
+    },
+    {
+      "id": 330,
+      "en": "You ask me about the address.",
+      "de": "Du fragst mich nach der Adresse.",
+      "level": "A2",
+      "category": "directions"
+    },
+    {
+      "id": 331,
+      "en": "He asks her about the appointment.",
+      "de": "Er fragt sie nach dem Termin.",
+      "level": "A2",
+      "category": "work"
+    },
+    {
+      "id": 332,
+      "en": "She asks him about the way.",
+      "de": "Sie fragt ihn nach dem Weg.",
+      "level": "A2",
+      "category": "directions"
+    },
+    {
+      "id": 333,
+      "en": "We ask you all about the plan.",
+      "de": "Wir fragen euch nach dem Plan.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 334,
+      "en": "You all ask us about the tickets.",
+      "de": "Ihr fragt uns nach den Fahrkarten.",
+      "level": "A2",
+      "category": "transport"
+    },
+    {
+      "id": 335,
+      "en": "They ask the receptionist about the room.",
+      "de": "Sie fragen die Rezeptionistin nach dem Zimmer.",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "id": 336,
+      "en": "I would like to ask you about the contract.",
+      "de": "Ich möchte Sie nach dem Vertrag fragen.",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 337,
+      "en": "Are you coming with us?",
+      "de": "Kommst du mit uns?",
+      "level": "A2",
+      "category": "informal"
+    },
+    {
+      "id": 338,
+      "en": "Are you coming with us?",
+      "de": "Kommen Sie mit uns?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 339,
+      "en": "Can you show me the way?",
+      "de": "Können Sie mir den Weg zeigen?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 340,
+      "en": "Would you like a coffee?",
+      "de": "Möchtest du einen Kaffee?",
+      "level": "A1",
+      "category": "informal"
+    },
+    {
+      "id": 341,
+      "en": "Would you like a coffee?",
+      "de": "Möchten Sie einen Kaffee?",
+      "level": "A1",
+      "category": "formal"
+    },
+    {
+      "id": 342,
+      "en": "Can I call you tomorrow?",
+      "de": "Kann ich dich morgen anrufen?",
+      "level": "A2",
+      "category": "informal"
+    },
+    {
+      "id": 343,
+      "en": "Can I call you tomorrow?",
+      "de": "Kann ich Sie morgen anrufen?",
+      "level": "A2",
+      "category": "formal"
+    },
+    {
+      "id": 344,
+      "en": "After work, I go to the supermarket with my colleague.",
+      "de": "Nach der Arbeit gehe ich mit meiner Kollegin zum Supermarkt.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 345,
+      "en": "Before the meeting, you talk to your boss about the numbers.",
+      "de": "Vor der Besprechung sprichst du mit deinem Chef über die Zahlen.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 346,
+      "en": "During the break, he sits with his team in the kitchen.",
+      "de": "In der Pause sitzt er mit seinem Team in der Küche.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 347,
+      "en": "After the appointment, she goes to the pharmacy with her child.",
+      "de": "Nach dem Termin geht sie mit ihrem Kind zur Apotheke.",
+      "level": "B1",
+      "category": "health"
+    },
+    {
+      "id": 348,
+      "en": "On Saturday, we drive to the lake with our friends.",
+      "de": "Am Samstag fahren wir mit unseren Freunden an den See.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 349,
+      "en": "In the evening, you all eat at the restaurant near the hotel.",
+      "de": "Am Abend esst ihr im Restaurant neben dem Hotel.",
+      "level": "B1",
+      "category": "restaurant"
+    },
+    {
+      "id": 350,
+      "en": "Tomorrow, they travel by train to the fair in Leipzig.",
+      "de": "Morgen reisen sie mit dem Zug zur Messe nach Leipzig.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 351,
+      "en": "After the course, you can speak with the teacher.",
+      "de": "Nach dem Kurs können Sie mit der Lehrerin sprechen.",
+      "level": "B1",
+      "category": "formal"
+    },
+    {
+      "id": 352,
+      "en": "I left my bag in the train.",
+      "de": "Ich habe meine Tasche im Zug gelassen.",
+      "level": "B1",
+      "category": "transport"
+    },
+    {
+      "id": 353,
+      "en": "You put your passport in the small bag.",
+      "de": "Du legst deinen Pass in die kleine Tasche.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 354,
+      "en": "He takes the documents out of the drawer.",
+      "de": "Er nimmt die Unterlagen aus der Schublade.",
+      "level": "B1",
+      "category": "work"
+    },
+    {
+      "id": 355,
+      "en": "She puts the receipt in her wallet.",
+      "de": "Sie steckt die Quittung in ihren Geldbeutel.",
+      "level": "B1",
+      "category": "shopping"
+    },
+    {
+      "id": 356,
+      "en": "We take the luggage from the car.",
+      "de": "Wir holen das Gepäck aus dem Auto.",
+      "level": "B1",
+      "category": "travel"
+    },
+    {
+      "id": 357,
+      "en": "You all put the chairs around the table.",
+      "de": "Ihr stellt die Stühle um den Tisch.",
+      "level": "B1",
+      "category": "home"
+    },
+    {
+      "id": 358,
+      "en": "They hang the coats on the coat rack.",
+      "de": "Sie hängen die Mäntel an die Garderobe.",
+      "level": "B1",
+      "category": "home"
+    },
+    {
+      "id": 359,
+      "en": "Please place the documents on my desk.",
+      "de": "Legen Sie die Unterlagen bitte auf meinen Schreibtisch.",
+      "level": "B1",
+      "category": "formal"
     }
   ],
   "grammar": [

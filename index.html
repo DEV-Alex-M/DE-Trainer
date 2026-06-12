@@ -64,6 +64,14 @@
           <option value="all">All categories</option>
         </select>
       </label>
+      <label>Sentence style
+        <select id="sentenceStyleFilter">
+          <option value="all">All styles</option>
+          <option value="neutral">Neutral</option>
+          <option value="informal">Informal / du</option>
+          <option value="formal">Formal / Sie</option>
+        </select>
+      </label>
       <button id="resetProgress" class="ghost">Reset practice history</button>
     </section>
 
@@ -99,6 +107,7 @@
       <div class="card practice-card">
         <div class="label">English</div>
         <div id="sentencePrompt" class="prompt">-</div>
+        <div id="sentenceContext" class="grammar-context"></div>
         <input id="sentenceAnswer" autocomplete="off" placeholder="German sentence" />
         <div class="special-char-row" aria-label="German special characters for sentence answer">
           <span>Insert:</span>
@@ -125,6 +134,7 @@
       <div class="card practice-card">
         <div class="label">English</div>
         <div id="builderPrompt" class="prompt">-</div>
+        <div id="builderContext" class="grammar-context"></div>
         <div id="builtSentence" class="built" aria-label="Built German sentence"></div>
         <div id="wordBank" class="word-bank"></div>
         <div class="actions">
@@ -157,7 +167,7 @@
         <div id="grammarContext" class="grammar-context"></div>
         <div id="grammarOptions" class="grammar-options"></div>
         <input id="grammarAnswer" autocomplete="off" placeholder="Type the missing article/form" />
-        <div class="special-char-row" aria-label="German special characters for grammar answer">
+        <div id="grammarSpecialChars" class="special-char-row" aria-label="German special characters for grammar answer">
           <span>Insert:</span>
           <button type="button" class="char-btn" data-insert="ä" data-target="grammarAnswer">ä</button>
           <button type="button" class="char-btn" data-insert="ö" data-target="grammarAnswer">ö</button>

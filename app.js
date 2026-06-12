@@ -261,9 +261,45 @@ function checkWord() {
   input.disabled = true;
 }
 
+function sentenceStyleText(sentence) {
+  const style = sentence.formality || sentence.style || "neutral";
+  if (style === "formal") return "Expected style: formal Sie";
+  if (style === "informal") return "Expected style: informal du";
+  return "Expected style: neutral / everyday";
+}
+
+function filteredSentences() {
+  const styleFilter = $("sentenceStyleFilter") ? $("sentenceStyleFilter").value : "all";
+  const base = filtered(data.sentences);
+  return base.filter(sentence => {
+    const style = sentence.formality || sentence.style || "neutral";
+    return styleFilter === "all" || style === styleFilter;
+  });
+}
+
+function pickSentence(mode) {
+  const list = filteredSentences();
+  const source = list.length ? list : data.sentences;
+  const lastId = lastPickedByMode[mode];
+  const candidates = source.length > 1 ? source.filter(item => String(item.id) !== String(lastId)) : source;
+  const picked = candidates[Math.floor(Math.random() * candidates.length)] || source[0];
+  lastPickedByMode[mode] = picked && picked.id;
+  return picked;
+}
+
+function renderSentenceContext(elementId, sentence) {
+  const el = $(elementId);
+  if (!el || !sentence) return;
+  const style = sentenceStyleText(sentence);
+  const note = sentence.context || sentence.meaning || "";
+  el.textContent = note ? `${style} • ${note}` : style;
+  el.style.display = "block";
+}
+
 function showSentence() {
-  currentSentence = pick(data.sentences, "sentences");
+  currentSentence = pickSentence("sentences");
   $("sentencePrompt").textContent = currentSentence.en;
+  renderSentenceContext("sentenceContext", currentSentence);
   $("sentenceAnswer").value = "";
   $("sentenceAnswer").disabled = false;
   $("sentenceFeedback").textContent = "";
@@ -302,9 +338,10 @@ function renderBuilt() {
 }
 
 function showBuilder() {
-  currentBuild = pick(data.sentences, "builder");
+  currentBuild = pickSentence("builder");
   builtWords = [];
   $("builderPrompt").textContent = currentBuild.en;
+  renderSentenceContext("builderContext", currentBuild);
   $("builderFeedback").textContent = "";
   $("builderFeedback").className = "feedback";
   const words = shuffle(currentBuild.de.replace(/[.!?]/g, "").split(" "));
@@ -365,14 +402,16 @@ function showGrammar() {
 
   if (!currentGrammar) {
     prompt.textContent = "No grammar questions available.";
+    const grammarChars = $("grammarSpecialChars");
+    if (grammarChars) grammarChars.style.display = "none";
     return;
   }
 
   label.textContent = `${currentGrammar.case || "Grammar"} • ${currentGrammar.level} • ${currentGrammar.category || "mixed"}`;
   prompt.textContent = currentGrammar.prompt;
   if (context) {
-    const contextText = currentGrammar.context || currentGrammar.meaning || currentGrammar.translation || "";
-    context.textContent = contextText ? `Expected meaning: ${contextText}` : "";
+    const contextText = grammarPromptHint(currentGrammar);
+    context.textContent = contextText;
     context.style.display = contextText ? "block" : "none";
   }
   feedback.textContent = "";
@@ -384,6 +423,8 @@ function showGrammar() {
   const isChoice = currentGrammar.mode === "choice";
   input.style.display = isChoice ? "none" : "block";
   options.style.display = isChoice ? "flex" : "none";
+  const grammarChars = $("grammarSpecialChars");
+  if (grammarChars) grammarChars.style.display = isChoice ? "none" : "flex";
 
   if (isChoice) {
     (currentGrammar.options || []).forEach(option => {
@@ -399,6 +440,40 @@ function showGrammar() {
       options.appendChild(button);
     });
   }
+}
+
+function grammarPromptHint(grammar) {
+  const topic = grammar.grammarTopic || grammar.category || "";
+  const grammarCase = grammar.case || "";
+  const modeText = grammar.mode === "choice" ? "Choose the correct option." : "Type the missing word or phrase.";
+
+  if (topic === "formality" || grammar.formality) {
+    const style = grammar.formality || grammar.style || "";
+    if (style === "formal") return `${modeText} Expected style: formal Sie.`;
+    if (style === "informal") return `${modeText} Expected style: informal du.`;
+    return `${modeText} Expected style: everyday German.`;
+  }
+
+  if (topic === "location-movement") {
+    const raw = `${grammarCase} ${grammar.context || ""}`.toLowerCase();
+    if (raw.includes("movement") || raw.includes("direction")) {
+      return `${modeText} Meaning: movement or direction. Use the case shown without revealing the article.`;
+    }
+    if (raw.includes("location") || raw.includes("already")) {
+      return `${modeText} Meaning: location, already being somewhere. Use the case shown without revealing the article.`;
+    }
+  }
+
+  if (topic === "prepositions" || String(grammar.category || "").includes("preposition")) {
+    return `${modeText} Choose the natural German preposition for this real-world sentence.`;
+  }
+
+  if (topic === "articles" || String(grammar.category || "").includes("article")) {
+    return `${modeText} Choose the correct article for the case and noun.`;
+  }
+
+  if (grammarCase) return `${modeText} Focus: ${grammarCase}.`;
+  return modeText;
 }
 
 function grammarAcceptedAnswers(grammar) {
@@ -625,9 +700,10 @@ function renderContentList() {
     rows.push(`<div class="row"><span>${word.level}</span><span>${word.en}</span><span>${german}</span><span>${word.type} • ${word.category || "-"}</span></div>`);
   });
   data.sentences.forEach(sentence => {
-    const text = `${sentence.level} ${sentence.en} ${sentence.de} sentence ${sentence.category || ""}`;
+    const sentenceStyle = sentence.formality || sentence.style || "neutral";
+    const text = `${sentence.level} ${sentence.en} ${sentence.de} sentence ${sentence.category || ""} ${sentenceStyle} ${sentence.context || ""}`;
     if (!searchMatches(text, query)) return;
-    rows.push(`<div class="row"><span>${sentence.level}</span><span>${sentence.en}</span><span>${sentence.de}</span><span>sentence • ${sentence.category || "-"}</span></div>`);
+    rows.push(`<div class="row"><span>${sentence.level}</span><span>${sentence.en}</span><span>${sentence.de}</span><span>sentence • ${sentence.category || "-"} • ${sentenceStyle}</span></div>`);
   });
   (data.grammar || []).forEach(grammar => {
     const text = `${grammar.level} ${grammar.case} ${grammar.prompt} ${grammar.answer} ${grammar.context || ""} grammar article dative accusative nominative preposition location movement ${grammar.category || ""} ${grammar.grammarTopic || ""}`;
@@ -715,6 +791,11 @@ function init() {
 
   $("levelFilter").addEventListener("change", refreshPracticeAfterFilterChange);
   if ($("categoryFilter")) $("categoryFilter").addEventListener("change", refreshPracticeAfterFilterChange);
+  if ($("sentenceStyleFilter")) $("sentenceStyleFilter").addEventListener("change", () => {
+    showSentence();
+    showBuilder();
+    renderContentList();
+  });
   if ($("grammarFocusFilter")) $("grammarFocusFilter").addEventListener("change", () => {
     showGrammar();
     renderContentList();
