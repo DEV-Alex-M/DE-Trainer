@@ -373,3 +373,39 @@ input:disabled {
   color: var(--muted);
   font-weight: 750;
 }
+
+.special-char-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 2px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.char-btn {
+  min-width: 38px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--chip);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.char-btn:hover {
+  box-shadow: 0 8px 18px rgba(79, 70, 229, .16);
+}
+
+input:disabled + .special-char-row .char-btn,
+input:disabled + .special-char-row {
+  opacity: .55;
+}
+
+input:disabled + .special-char-row .char-btn {
+  cursor: not-allowed;
+}
+
