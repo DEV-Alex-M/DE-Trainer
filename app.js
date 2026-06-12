@@ -445,35 +445,42 @@ function showGrammar() {
 function grammarPromptHint(grammar) {
   const topic = grammar.grammarTopic || grammar.category || "";
   const grammarCase = grammar.case || "";
-  const modeText = grammar.mode === "choice" ? "Choose the correct option." : "Type the missing word or phrase.";
+  const parts = [];
+
+  if (grammar.mode === "choice") parts.push("Pick the missing word.");
+  else parts.push("Type the missing word or phrase.");
 
   if (topic === "formality" || grammar.formality) {
     const style = grammar.formality || grammar.style || "";
-    if (style === "formal") return `${modeText} Expected style: formal Sie.`;
-    if (style === "informal") return `${modeText} Expected style: informal du.`;
-    return `${modeText} Expected style: everyday German.`;
+    if (style === "formal") parts.push("Use formal Sie.");
+    else if (style === "informal") parts.push("Use informal du/ihr.");
+    else parts.push("Use natural everyday German.");
+    return parts.join(" ");
   }
 
   if (topic === "location-movement") {
     const raw = `${grammarCase} ${grammar.context || ""}`.toLowerCase();
     if (raw.includes("movement") || raw.includes("direction")) {
-      return `${modeText} Meaning: movement or direction. Use the case shown without revealing the article.`;
+      parts.push("Meaning: movement or direction.");
+    } else if (raw.includes("location") || raw.includes("already")) {
+      parts.push("Meaning: already there / location.");
     }
-    if (raw.includes("location") || raw.includes("already")) {
-      return `${modeText} Meaning: location, already being somewhere. Use the case shown without revealing the article.`;
-    }
+    if (grammarCase) parts.push(`Case focus: ${grammarCase}.`);
+    return parts.join(" ");
   }
 
   if (topic === "prepositions" || String(grammar.category || "").includes("preposition")) {
-    return `${modeText} Choose the natural German preposition for this real-world sentence.`;
+    parts.push("Choose the natural preposition.");
+    return parts.join(" ");
   }
 
   if (topic === "articles" || String(grammar.category || "").includes("article")) {
-    return `${modeText} Choose the correct article for the case and noun.`;
+    if (grammarCase) parts.push(`Case focus: ${grammarCase}.`);
+    return parts.join(" ");
   }
 
-  if (grammarCase) return `${modeText} Focus: ${grammarCase}.`;
-  return modeText;
+  if (grammarCase) parts.push(`Case focus: ${grammarCase}.`);
+  return parts.join(" ");
 }
 
 function grammarAcceptedAnswers(grammar) {
