@@ -449,3 +449,22 @@ input:disabled + .special-char-row .char-btn {
   font-weight: 700;
   color: var(--muted);
 }
+
+.difficult-section-row {
+  margin-top: 14px;
+}
+
+.row small {
+  display: inline-block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+button:disabled,
+button.is-disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

@@ -14,6 +14,37 @@ const lastPickedByMode = {};
 
 const $ = (id) => document.getElementById(id);
 
+const answerButtonPairs = {
+  checkWord: "showWord",
+  checkGoethe: "showGoethe",
+  checkSentence: "showSentence",
+  checkGrammar: "showGrammar",
+  checkVerb: "showVerb"
+};
+
+function setCheckLocked(buttonId, locked) {
+  const isLocked = Boolean(locked);
+  const button = $(buttonId);
+  if (button) {
+    button.disabled = isLocked;
+    button.classList.toggle("is-disabled", isLocked);
+  }
+
+  const pairedShowButton = answerButtonPairs[buttonId];
+  if (pairedShowButton) {
+    const showButton = $(pairedShowButton);
+    if (showButton) {
+      showButton.disabled = isLocked;
+      showButton.classList.toggle("is-disabled", isLocked);
+    }
+  }
+}
+
+function isCheckLocked(buttonId) {
+  const button = $(buttonId);
+  return Boolean(button && button.disabled);
+}
+
 let progress = loadProgress();
 
 function loadProgress() {
@@ -24,6 +55,7 @@ function loadProgress() {
     grammars: {},
     goethe: {},
     verbs: {},
+    mistakes: [],
     practiceByDate: {},
     lastPracticeDate: ""
   };
@@ -236,9 +268,11 @@ function showGoethe() {
   $("goetheAnswer").placeholder = isEnglishToGerman ? "German answer" : "English meaning";
   $("goetheFeedback").textContent = "";
   $("goetheFeedback").className = "feedback";
+  setCheckLocked("checkGoethe", false);
 }
 
 function checkGoethe() {
+  if (isCheckLocked("checkGoethe")) return;
   if (!currentGoethe) return;
   const rawAnswer = $("goetheAnswer").value.trim();
   const answer = normalize(rawAnswer);
@@ -272,8 +306,20 @@ function checkGoethe() {
       feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
       feedback.className = "feedback bad";
     }
+    if (!isCorrect || capitalizationIssue || isAcceptedWithoutArticle) {
+      recordMistake("goethe", {
+        itemId: `${currentGoethe.id}:${currentGoetheDirection}`,
+        level: currentGoethe.level,
+        category: currentGoethe.category,
+        prompt: goethePromptForDirection(currentGoethe, currentGoetheDirection),
+        expected: fullAnswerText,
+        given: rawAnswer,
+        issue: capitalizationIssue ? "Capitalization" : (isAcceptedWithoutArticle ? "Article missing" : "Wrong answer")
+      });
+    }
     recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
     $("goetheAnswer").disabled = true;
+    setCheckLocked("checkGoethe", true);
     return;
   }
 
@@ -283,8 +329,43 @@ function checkGoethe() {
     ? `Correct: ${currentGoethe.en}`
     : `Not quite. Correct: ${currentGoethe.en}`;
   feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  if (!isCorrect) {
+    recordMistake("goethe", {
+      itemId: `${currentGoethe.id}:${currentGoetheDirection}`,
+      level: currentGoethe.level,
+      category: currentGoethe.category,
+      prompt: goethePromptForDirection(currentGoethe, currentGoetheDirection),
+      expected: currentGoethe.en,
+      given: rawAnswer,
+      issue: "Wrong answer"
+    });
+  }
   recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
   $("goetheAnswer").disabled = true;
+  setCheckLocked("checkGoethe", true);
+}
+
+function revealGoethe() {
+  if (isCheckLocked("checkGoethe")) return;
+  if (!currentGoethe) return;
+  const expected = goetheAnswerForDirection(currentGoethe, currentGoetheDirection);
+  const feedback = $("goetheFeedback");
+  feedback.textContent = expected;
+  feedback.className = "feedback good";
+  const input = $("goetheAnswer");
+  const given = input ? input.value : "";
+  recordMistake("goethe", {
+    itemId: `${currentGoethe.id}:${currentGoetheDirection}`,
+    level: currentGoethe.level,
+    category: currentGoethe.category,
+    prompt: goethePromptForDirection(currentGoethe, currentGoetheDirection),
+    expected,
+    given,
+    issue: "Show answer"
+  });
+  recordGoethe(currentGoethe, false, currentGoetheDirection);
+  if (input) input.disabled = true;
+  setCheckLocked("checkGoethe", true);
 }
 
 
@@ -312,6 +393,56 @@ function recordSentence(collection, sentence, correct) {
   saveProgress();
 }
 
+function mistakeKey(tab, itemId, expected, prompt) {
+  return [tab, itemId || "", normalize(expected || ""), normalize(prompt || "")].join("|");
+}
+
+function recordMistake(tab, details) {
+  if (!progress.mistakes || !Array.isArray(progress.mistakes)) progress.mistakes = [];
+  const key = mistakeKey(tab, details.itemId, details.expected, details.prompt);
+  let item = progress.mistakes.find(entry => entry.key === key);
+  if (!item) {
+    item = {
+      key,
+      tab,
+      itemId: details.itemId || "",
+      level: details.level || "",
+      category: details.category || "",
+      prompt: details.prompt || "",
+      expected: details.expected || "",
+      lastAnswer: "",
+      issue: "",
+      count: 0,
+      lastSeen: ""
+    };
+    progress.mistakes.push(item);
+  }
+  item.count += 1;
+  item.lastAnswer = details.given || "";
+  item.issue = details.issue || "Wrong answer";
+  item.level = details.level || item.level || "";
+  item.category = details.category || item.category || "";
+  item.lastSeen = todayKey();
+  progress.mistakes = progress.mistakes.slice(-800);
+}
+
+function tabLabel(tab) {
+  const labels = {
+    words: "Words",
+    sentences: "Sentences",
+    builders: "Sentence Builder",
+    grammars: "Grammar",
+    goethe: "Goethe Words",
+    verbs: "Verb Conjugation"
+  };
+  return labels[tab] || tab;
+}
+
+function mistakeSortValue(item) {
+  const order = { words: 1, goethe: 2, sentences: 3, builders: 4, grammars: 5, verbs: 6 };
+  return order[item.tab] || 99;
+}
+
 function showWord() {
   currentWord = pick(data.words, "words");
   $("wordPrompt").textContent = currentWord.en;
@@ -319,6 +450,7 @@ function showWord() {
   $("wordAnswer").disabled = false;
   $("wordFeedback").textContent = "";
   $("wordFeedback").className = "feedback";
+  setCheckLocked("checkWord", false);
 }
 
 function splitArticleAnswer(value) {
@@ -335,6 +467,7 @@ function splitArticleAnswer(value) {
 }
 
 function checkWord() {
+  if (isCheckLocked("checkWord")) return;
   if (!currentWord) return;
   const input = $("wordAnswer");
   const rawAnswer = input.value;
@@ -343,12 +476,14 @@ function checkWord() {
   const fullAnswerText = fullWordAnswer(currentWord);
   const fullAnswer = normalize(fullAnswerText);
   const feedback = $("wordFeedback");
+  let mistakeIssue = "";
 
   if (answer === fullAnswer) {
     const capitalizationIssue = hasCapitalizationIssue(rawAnswer, fullAnswerText);
     if (capitalizationIssue && currentWord.type === "noun") {
       feedback.innerHTML = `Correct word, but remember capitalization.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}<br>${nounCapitalizationReminder()}`;
       feedback.className = "feedback warn";
+      mistakeIssue = "Capitalization";
       recordWord(currentWord, true, false, false, true);
     } else {
       feedback.textContent = `Correct: ${fullAnswerText}`;
@@ -360,6 +495,7 @@ function checkWord() {
     const extra = capitalizationIssue && currentWord.type === "noun" ? ` ${nounCapitalizationReminder()}` : "";
     feedback.textContent = `Correct word, article missing: ${fullAnswerText}.${extra}`;
     feedback.className = "feedback warn";
+    mistakeIssue = capitalizationIssue && currentWord.type === "noun" ? "Article missing + capitalization" : "Article missing";
     recordWord(currentWord, true, true, false, capitalizationIssue && currentWord.type === "noun");
   } else if (currentWord.article) {
     const given = splitArticleAnswer(input.value);
@@ -374,18 +510,56 @@ function checkWord() {
         feedback.innerHTML = `Correct word, wrong article.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}`;
       }
       feedback.className = "feedback warn";
+      mistakeIssue = capitalizationIssue ? "Wrong article + capitalization" : "Wrong article";
       recordWord(currentWord, true, false, true, capitalizationIssue);
     } else {
       feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
       feedback.className = "feedback bad";
+      mistakeIssue = "Wrong word";
       recordWord(currentWord, false, false, false, false);
     }
   } else {
     feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
     feedback.className = "feedback bad";
+    mistakeIssue = "Wrong word";
     recordWord(currentWord, false, false, false, false);
   }
+  if (mistakeIssue) {
+    recordMistake("words", {
+      itemId: currentWord.id,
+      level: currentWord.level,
+      category: currentWord.category || currentWord.type,
+      prompt: currentWord.en,
+      expected: fullAnswerText,
+      given: rawAnswer,
+      issue: mistakeIssue
+    });
+  }
   input.disabled = true;
+  setCheckLocked("checkWord", true);
+}
+
+function revealWord() {
+  if (isCheckLocked("checkWord")) return;
+  if (!currentWord) return;
+  const expected = fullWordAnswer(currentWord);
+  const feedback = $("wordFeedback");
+  feedback.textContent = expected;
+  feedback.className = "feedback good";
+  const input = $("wordAnswer");
+  const given = input ? input.value : "";
+  recordMistake("words", {
+    itemId: currentWord.id,
+    level: currentWord.level,
+    category: currentWord.category || currentWord.type,
+    prompt: currentWord.en,
+    expected,
+    given,
+    issue: "Show answer"
+  });
+  recordWord(currentWord, false, false, false, false);
+  if (input) input.disabled = true;
+  setCheckLocked("checkWord", true);
 }
 
 function sentenceStyleText(sentence) {
@@ -431,15 +605,17 @@ function showSentence() {
   $("sentenceAnswer").disabled = false;
   $("sentenceFeedback").textContent = "";
   $("sentenceFeedback").className = "feedback";
+  setCheckLocked("checkSentence", false);
 }
 
 function checkSentence() {
+  if (isCheckLocked("checkSentence")) return;
   if (!currentSentence) return;
   const rawAnswer = $("sentenceAnswer").value;
   const answer = normalize(rawAnswer);
   const correct = normalize(currentSentence.de);
   const feedback = $("sentenceFeedback");
-  const isCorrect = answer === correct || answer === fullCorrect;
+  const isCorrect = answer === correct;
   const capitalizationIssue = isCorrect && hasCapitalizationIssue(rawAnswer, currentSentence.de);
 
   if (isCorrect && capitalizationIssue) {
@@ -449,8 +625,42 @@ function checkSentence() {
     feedback.textContent = isCorrect ? `Correct: ${currentSentence.de}` : `Not quite. Correct: ${currentSentence.de}`;
     feedback.className = isCorrect ? "feedback good" : "feedback bad";
   }
+  if (!isCorrect || capitalizationIssue) {
+    recordMistake("sentences", {
+      itemId: currentSentence.id,
+      level: currentSentence.level,
+      category: currentSentence.category,
+      prompt: currentSentence.en,
+      expected: currentSentence.de,
+      given: rawAnswer,
+      issue: capitalizationIssue ? "Capitalization" : "Wrong sentence"
+    });
+  }
   recordSentence("sentences", currentSentence, isCorrect);
   $("sentenceAnswer").disabled = true;
+  setCheckLocked("checkSentence", true);
+}
+
+function revealSentence() {
+  if (isCheckLocked("checkSentence")) return;
+  if (!currentSentence) return;
+  const feedback = $("sentenceFeedback");
+  feedback.textContent = currentSentence.de;
+  feedback.className = "feedback good";
+  const input = $("sentenceAnswer");
+  const given = input ? input.value : "";
+  recordMistake("sentences", {
+    itemId: currentSentence.id,
+    level: currentSentence.level,
+    category: currentSentence.category,
+    prompt: currentSentence.en,
+    expected: currentSentence.de,
+    given,
+    issue: "Show answer"
+  });
+  recordSentence("sentences", currentSentence, false);
+  if (input) input.disabled = true;
+  setCheckLocked("checkSentence", true);
 }
 
 function shuffle(array) {
@@ -471,6 +681,7 @@ function showBuilder() {
   renderSentenceContext("builderContext", currentBuild);
   $("builderFeedback").textContent = "";
   $("builderFeedback").className = "feedback";
+  setCheckLocked("checkBuild", false);
   const words = shuffle(currentBuild.de.replace(/[.!?]/g, "").split(" "));
   $("wordBank").innerHTML = "";
   words.forEach((word, index) => {
@@ -490,6 +701,7 @@ function showBuilder() {
 }
 
 function checkBuild() {
+  if (isCheckLocked("checkBuild")) return;
   if (!currentBuild) return;
   const built = normalize(builtWords.map(item => item.word).join(" "));
   const correct = normalize(currentBuild.de);
@@ -497,7 +709,19 @@ function checkBuild() {
   const isCorrect = built === correct;
   feedback.textContent = isCorrect ? `Correct: ${currentBuild.de}` : `Not quite. Correct: ${currentBuild.de}`;
   feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  if (!isCorrect) {
+    recordMistake("builders", {
+      itemId: currentBuild.id,
+      level: currentBuild.level,
+      category: currentBuild.category,
+      prompt: currentBuild.en,
+      expected: currentBuild.de,
+      given: builtWords.map(item => item.word).join(" "),
+      issue: "Wrong word order"
+    });
+  }
   recordSentence("builders", currentBuild, isCorrect);
+  setCheckLocked("checkBuild", true);
 }
 
 function recordGrammar(grammar, correct) {
@@ -543,6 +767,7 @@ function showGrammar() {
   }
   feedback.textContent = "";
   feedback.className = "feedback";
+  setCheckLocked("checkGrammar", false);
   input.value = "";
   input.disabled = false;
   options.innerHTML = "";
@@ -739,6 +964,7 @@ function grammarFeedbackHtml(grammar, isCorrect) {
 }
 
 function checkGrammar() {
+  if (isCheckLocked("checkGrammar")) return;
   if (!currentGrammar) return;
   const isChoice = currentGrammar.mode === "choice";
   const given = isChoice ? selectedGrammarOption : $("grammarAnswer").value;
@@ -759,16 +985,44 @@ function checkGrammar() {
     feedback.innerHTML += `<div class="grammar-feedback-note">${escapeHtml(nounCapitalizationReminder())}</div>`;
   }
   feedback.className = typedCapitalizationIssue ? "feedback warn" : (isCorrect ? "feedback good" : "feedback bad");
+  if (!isCorrect || typedCapitalizationIssue) {
+    recordMistake("grammars", {
+      itemId: currentGrammar.id,
+      level: currentGrammar.level,
+      category: currentGrammar.category || currentGrammar.grammarTopic,
+      prompt: currentGrammar.prompt,
+      expected: fullGrammarAnswer(currentGrammar),
+      given,
+      issue: typedCapitalizationIssue ? "Capitalization" : "Wrong grammar answer"
+    });
+  }
   recordGrammar(currentGrammar, isCorrect);
   $("grammarAnswer").disabled = true;
   document.querySelectorAll(".grammar-option").forEach(button => button.disabled = true);
+  setCheckLocked("checkGrammar", true);
 }
 
 function revealGrammar() {
+  if (isCheckLocked("checkGrammar")) return;
   if (!currentGrammar) return;
   const feedback = $("grammarFeedback");
   feedback.innerHTML = grammarFeedbackHtml(currentGrammar, true);
   feedback.className = "feedback good";
+  const input = $("grammarAnswer");
+  const given = currentGrammar.mode === "choice" ? selectedGrammarOption : (input ? input.value : "");
+  recordMistake("grammars", {
+    itemId: currentGrammar.id,
+    level: currentGrammar.level,
+    category: currentGrammar.category || currentGrammar.grammarTopic,
+    prompt: currentGrammar.prompt,
+    expected: fullGrammarAnswer(currentGrammar),
+    given,
+    issue: "Show answer"
+  });
+  recordGrammar(currentGrammar, false);
+  if (input) input.disabled = true;
+  document.querySelectorAll(".grammar-option").forEach(button => button.disabled = true);
+  setCheckLocked("checkGrammar", true);
 }
 
 function wordStats(word) {
@@ -783,11 +1037,40 @@ function wordStats(word) {
   };
 }
 
-function difficultWords() {
+function legacyWordMistakes() {
   return data.words
     .map(word => ({ word, stats: wordStats(word) }))
     .filter(item => item.stats.wrong > 0 || item.stats.articleMissing > 0 || item.stats.articleWrong > 0 || item.stats.capitalizationMistakes > 0)
-    .sort((a, b) => (b.stats.wrong + b.stats.articleMissing + b.stats.articleWrong + b.stats.capitalizationMistakes) - (a.stats.wrong + a.stats.articleMissing + a.stats.articleWrong + a.stats.capitalizationMistakes));
+    .map(({ word, stats }) => ({
+      key: `legacy-word-${word.id}`,
+      tab: "words",
+      itemId: word.id,
+      level: word.level,
+      category: word.category || word.type,
+      prompt: word.en,
+      expected: fullWordAnswer(word),
+      lastAnswer: "",
+      issue: [`Wrong word: ${stats.wrong}`, `Article missing: ${stats.articleMissing}`, `Wrong article: ${stats.articleWrong || 0}`, `Capitalization: ${stats.capitalizationMistakes || 0}`].join(" • "),
+      count: stats.wrong + stats.articleMissing + stats.articleWrong + stats.capitalizationMistakes,
+      lastSeen: stats.lastSeen || ""
+    }));
+}
+
+function difficultWords() {
+  const stored = Array.isArray(progress.mistakes) ? progress.mistakes : [];
+  const byKey = new Map();
+  [...legacyWordMistakes(), ...stored].forEach(item => {
+    if (!item || !item.key) return;
+    const existing = byKey.get(item.key);
+    if (!existing || (item.lastSeen || "") >= (existing.lastSeen || "")) {
+      byKey.set(item.key, item);
+    }
+  });
+  return [...byKey.values()].sort((a, b) => {
+    const tabSort = mistakeSortValue(a) - mistakeSortValue(b);
+    if (tabSort) return tabSort;
+    return (b.count || 0) - (a.count || 0) || String(b.lastSeen || "").localeCompare(String(a.lastSeen || ""));
+  });
 }
 
 function renderStats() {
@@ -844,6 +1127,7 @@ function showVerb() {
   input.disabled = false;
   feedback.textContent = "";
   feedback.className = "feedback";
+  setCheckLocked("checkVerb", false);
 }
 
 
@@ -872,6 +1156,7 @@ function displayVerbAnswer(verb) {
 }
 
 function checkVerb() {
+  if (isCheckLocked("checkVerb")) return;
   if (!currentVerb) return;
   const input = $("verbAnswer");
   const rawAnswer = input.value;
@@ -893,15 +1178,43 @@ function checkVerb() {
     feedback.innerHTML = `Not quite.<br><br><b>${escapeHtml(verbPromptText(currentVerb))}</b><br><b>Correct:</b> ${escapeHtml(shownAnswer)}<br><span class="grammar-feedback-note">You can type only the verb form or include a matching pronoun.</span>`;
     feedback.className = "feedback bad";
   }
+  if (!isCorrect) {
+    recordMistake("verbs", {
+      itemId: currentVerb.id,
+      level: currentVerb.level,
+      category: currentVerb.tense || "verb",
+      prompt: verbPromptText(currentVerb),
+      expected: displayVerbAnswer(currentVerb),
+      given: rawAnswer,
+      issue: "Wrong conjugation"
+    });
+  }
   recordVerb(currentVerb, isCorrect);
   input.disabled = true;
+  setCheckLocked("checkVerb", true);
 }
 
 function revealVerb() {
+  if (isCheckLocked("checkVerb")) return;
   if (!currentVerb) return;
   const feedback = $("verbFeedback");
-  feedback.innerHTML = `<b>${escapeHtml(verbPromptText(currentVerb))}</b><br>Correct: ${escapeHtml(displayVerbAnswer(currentVerb))}<br><span class="grammar-feedback-note">You can type only the verb form or include a matching pronoun.</span>`;
+  const expected = displayVerbAnswer(currentVerb);
+  feedback.innerHTML = `<b>${escapeHtml(verbPromptText(currentVerb))}</b><br>Correct: ${escapeHtml(expected)}<br><span class="grammar-feedback-note">You can type only the verb form or include a matching pronoun.</span>`;
   feedback.className = "feedback good";
+  const input = $("verbAnswer");
+  const given = input ? input.value : "";
+  recordMistake("verbs", {
+    itemId: currentVerb.id,
+    level: currentVerb.level,
+    category: currentVerb.tense || "verb",
+    prompt: verbPromptText(currentVerb),
+    expected,
+    given,
+    issue: "Show answer"
+  });
+  recordVerb(currentVerb, false);
+  if (input) input.disabled = true;
+  setCheckLocked("checkVerb", true);
 }
 
 function searchMatches(text, query) {
@@ -910,18 +1223,25 @@ function searchMatches(text, query) {
 
 function renderDifficultList() {
   const query = $("difficultSearch") ? $("difficultSearch").value : "";
-  const items = difficultWords().filter(({ word, stats }) => {
-    const haystack = `${word.en} ${fullWordAnswer(word)} ${word.type} wrong ${stats.wrong} article missing ${stats.articleMissing} wrong article ${stats.articleWrong || 0} capitalization ${stats.capitalizationMistakes || 0}`;
+  const items = difficultWords().filter(item => {
+    const haystack = `${tabLabel(item.tab)} ${item.level || ""} ${item.category || ""} ${item.prompt || ""} ${item.expected || ""} ${item.lastAnswer || ""} ${item.issue || ""}`;
     return searchMatches(haystack, query);
   });
   if (!items.length) {
-    $("difficultList").innerHTML = `<p>No matching difficult words yet.</p>`;
+    $("difficultList").innerHTML = `<p>No matching difficult items yet.</p>`;
     return;
   }
-  const rows = [`<div class="row header-row"><b>English</b><b>German</b><b>Issues</b><b>Last seen</b></div>`];
-  items.forEach(({ word, stats }) => {
-    const issues = [`Wrong word: ${stats.wrong}`, `Article missing: ${stats.articleMissing}`, `Wrong article: ${stats.articleWrong || 0}`, `Capitalization: ${stats.capitalizationMistakes || 0}`].join(" • ");
-    rows.push(`<div class="row"><span>${word.en}</span><span>${fullWordAnswer(word)}</span><span>${issues}</span><span>${stats.lastSeen || "-"}</span></div>`);
+
+  const rows = [];
+  let currentTab = "";
+  items.forEach(item => {
+    if (item.tab !== currentTab) {
+      currentTab = item.tab;
+      rows.push(`<div class="row header-row difficult-section-row"><b>${escapeHtml(tabLabel(currentTab))}</b><b>Prompt</b><b>Correct answer</b><b>Issue</b></div>`);
+    }
+    const meta = [item.level, item.category].filter(Boolean).join(" • ");
+    const issue = `${item.issue || "Wrong answer"} (${item.count || 1}×)${item.lastSeen ? ` • ${item.lastSeen}` : ""}`;
+    rows.push(`<div class="row"><span>${escapeHtml(meta || "-")}</span><span>${escapeHtml(item.prompt || "-")}<br><small>Your last answer: ${escapeHtml(item.lastAnswer || "-")}</small></span><span>${escapeHtml(item.expected || "-")}</span><span>${escapeHtml(issue)}</span></div>`);
   });
   $("difficultList").innerHTML = rows.join("");
 }
@@ -1006,22 +1326,19 @@ function init() {
 
   $("checkWord").addEventListener("click", checkWord);
   $("nextWord").addEventListener("click", showWord);
-  $("showWord").addEventListener("click", () => $("wordFeedback").textContent = fullWordAnswer(currentWord));
+  $("showWord").addEventListener("click", revealWord);
   $("wordAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkWord(); });
 
   $("checkGoethe").addEventListener("click", checkGoethe);
   $("nextGoethe").addEventListener("click", showGoethe);
-  $("showGoethe").addEventListener("click", () => {
-    if (!currentGoethe) return;
-    $("goetheFeedback").textContent = goetheAnswerForDirection(currentGoethe, currentGoetheDirection);
-  });
+  $("showGoethe").addEventListener("click", revealGoethe);
   $("goetheAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkGoethe(); });
   const goetheDirection = $("goetheDirection");
   if (goetheDirection) goetheDirection.addEventListener("change", showGoethe);
 
   $("checkSentence").addEventListener("click", checkSentence);
   $("nextSentence").addEventListener("click", showSentence);
-  $("showSentence").addEventListener("click", () => $("sentenceFeedback").textContent = currentSentence.de);
+  $("showSentence").addEventListener("click", revealSentence);
   $("sentenceAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkSentence(); });
 
   $("checkBuild").addEventListener("click", checkBuild);
@@ -1078,6 +1395,7 @@ function init() {
     progress.grammars = {};
     progress.goethe = {};
     progress.verbs = {};
+    progress.mistakes = [];
     progress.practiceByDate = {};
     progress.lastPracticeDate = "";
     saveProgress();
