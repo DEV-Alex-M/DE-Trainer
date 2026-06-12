@@ -17,7 +17,7 @@
         <h1>German Practice Trainer</h1>
       </div>
       <div class="hero-actions">
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" onclick="toggleTheme(event)">☾ Dark</button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">☾ Dark</button>
       </div>
     </header>
 
@@ -44,6 +44,7 @@
       <button class="tab active" data-tab="words">Words</button>
       <button class="tab" data-tab="sentences">Sentences</button>
       <button class="tab" data-tab="builder">Sentence Builder</button>
+      <button class="tab" data-tab="grammar">Grammar</button>
       <button class="tab" data-tab="difficult">Difficult Words</button>
       <button class="tab" data-tab="list">Content</button>
     </nav>
@@ -57,12 +58,17 @@
           <option value="B1">B1</option>
         </select>
       </label>
+      <label>Category
+        <select id="categoryFilter">
+          <option value="all">All categories</option>
+        </select>
+      </label>
       <button id="resetProgress" class="ghost">Reset practice history</button>
     </section>
 
     <section id="words" class="panel active">
       <h2>Word Practice</h2>
-      <p class="hint">Translate the English word into German. For nouns, the trainer may ask for singular or plural. Include the article when you can, e.g. <b>der Apfel</b> or <b>die Äpfel</b>. Answers without the article are accepted, but marked as “article missing”.</p>
+      <p class="hint">Translate the English word into German. For nouns, include the article when you can, e.g. <b>das Wasser</b>. Answers without the article are accepted, but marked as “article missing”.</p>
       <div class="card practice-card">
         <div class="label">English</div>
         <div id="wordPrompt" class="prompt">-</div>
@@ -110,41 +116,62 @@
       </div>
     </section>
 
+
+    <section id="grammar" class="panel">
+      <h2>Grammar Practice</h2>
+      <p class="hint">Practice real-world article cases, prepositions, and location vs movement.</p>
+      <div class="grammar-toolbar">
+        <label>Grammar focus
+          <select id="grammarFocusFilter">
+            <option value="all">All grammar</option>
+            <option value="articles">Articles / cases</option>
+            <option value="prepositions">Prepositions</option>
+            <option value="location-movement">Location vs movement</option>
+          </select>
+        </label>
+      </div>
+      <div class="card practice-card">
+        <div class="label" id="grammarCaseLabel">Grammar</div>
+        <div id="grammarPrompt" class="prompt grammar-prompt">-</div>
+        <div id="grammarContext" class="grammar-context"></div>
+        <div id="grammarOptions" class="grammar-options"></div>
+        <input id="grammarAnswer" autocomplete="off" placeholder="Type the missing article/form" />
+        <div class="actions">
+          <button id="checkGrammar">Check</button>
+          <button id="nextGrammar" class="secondary">Next</button>
+          <button id="showGrammar" class="ghost">Show answer</button>
+        </div>
+        <div id="grammarFeedback" class="feedback"></div>
+      </div>
+    </section>
+
     <section id="difficult" class="panel">
       <h2>Difficult Words</h2>
       <p class="hint">Words appear here after wrong answers. Use this tab to focus on what needs more practice.</p>
-      <div class="search-toolbar">
-        <input id="difficultSearch" type="search" autocomplete="off" placeholder="Search failed words..." aria-label="Search difficult words" />
-      </div>
       <div class="card">
+        <input id="difficultSearch" class="search-input" autocomplete="off" placeholder="Search difficult words..." />
         <div id="difficultList" class="content-list empty-state"></div>
       </div>
     </section>
 
     <section id="list" class="panel">
-      <h2>Word List</h2>
-      <div class="search-toolbar">
-        <input id="contentSearch" type="search" autocomplete="off" placeholder="Search words and sentences..." aria-label="Search word list" />
-      </div>
+      <h2>Editable Content</h2>
+      <input id="contentSearch" class="search-input" autocomplete="off" placeholder="Search words, sentences, German, English, type, or level..." />
       <div id="contentList" class="content-list"></div>
     </section>
-
-    <footer class="app-footer" aria-label="Footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <strong>German Practice Trainer</strong>
-          <span>A1-B1 English → German practice</span>
-        </div>
-        <div class="footer-note">
-          <span>Progress is stored locally in your browser.</span>
-        </div>
-        <div class="footer-credit">
-          Created by Alex Mason
-        </div>
-      </div>
-    </footer>
-
   </main>
+
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <strong>German Practice Trainer</strong>
+        <span>A1–B1 English → German Learning</span>
+      </div>
+      <div class="footer-center">Progress stored locally in your browser</div>
+      <div class="footer-right"><span class="creator">Created by Alex Mason</span></div>
+    </div>
+  </footer>
 
   <script src="wordlist.js"></script>
   <script src="app.js"></script>
