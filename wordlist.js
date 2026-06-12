@@ -1,0 +1,60 @@
+// Edit this file to add or change learning content.
+// Level target: A1-B1 English > German.
+// Tip: keep ids unique. Difficulty can be A1, A2, or B1.
+
+window.LEARNING_DATA = {
+  words: [
+    { id: 1, en: "hello", de: "hallo", article: "", type: "greeting", level: "A1" },
+    { id: 2, en: "good morning", de: "guten Morgen", article: "", type: "greeting", level: "A1" },
+    { id: 3, en: "goodbye", de: "auf Wiedersehen", article: "", type: "greeting", level: "A1" },
+    { id: 4, en: "please", de: "bitte", article: "", type: "polite", level: "A1" },
+    { id: 5, en: "thank you", de: "danke", article: "", type: "polite", level: "A1" },
+    { id: 6, en: "yes", de: "ja", article: "", type: "basic", level: "A1" },
+    { id: 7, en: "no", de: "nein", article: "", type: "basic", level: "A1" },
+    { id: 8, en: "water", de: "Wasser", article: "das", plural: "Wasser", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 9, en: "bread", de: "Brot", article: "das", plural: "Brote", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 10, en: "apple", de: "Apfel", article: "der", plural: "Äpfel", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 11, en: "woman", de: "Frau", article: "die", plural: "Frauen", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 12, en: "man", de: "Mann", article: "der", plural: "Männer", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 13, en: "child", de: "Kind", article: "das", plural: "Kinder", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 14, en: "house", de: "Haus", article: "das", plural: "Häuser", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 15, en: "school", de: "Schule", article: "die", plural: "Schulen", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 16, en: "work", de: "Arbeit", article: "die", plural: "Arbeiten", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 17, en: "today", de: "heute", article: "", type: "time", level: "A1" },
+    { id: 18, en: "tomorrow", de: "morgen", article: "", type: "time", level: "A1" },
+    { id: 19, en: "yesterday", de: "gestern", article: "", type: "time", level: "A1" },
+    { id: 20, en: "I", de: "ich", article: "", type: "pronoun", level: "A1" },
+    { id: 21, en: "you", de: "du", article: "", type: "pronoun", level: "A1" },
+    { id: 22, en: "he", de: "er", article: "", type: "pronoun", level: "A1" },
+    { id: 23, en: "she", de: "sie", article: "", type: "pronoun", level: "A1" },
+    { id: 24, en: "we", de: "wir", article: "", type: "pronoun", level: "A1" },
+    { id: 25, en: "to be", de: "sein", article: "", type: "verb", level: "A1" },
+    { id: 26, en: "to have", de: "haben", article: "", type: "verb", level: "A1" },
+    { id: 27, en: "to go", de: "gehen", article: "", type: "verb", level: "A1" },
+    { id: 28, en: "to eat", de: "essen", article: "", type: "verb", level: "A1" },
+    { id: 29, en: "to drink", de: "trinken", article: "", type: "verb", level: "A1" },
+    { id: 30, en: "to learn", de: "lernen", article: "", type: "verb", level: "A1" },
+    { id: 31, en: "because", de: "weil", article: "", type: "connector", level: "A2" },
+    { id: 32, en: "but", de: "aber", article: "", type: "connector", level: "A1" },
+    { id: 33, en: "therefore", de: "deshalb", article: "", type: "connector", level: "A2" },
+    { id: 34, en: "appointment", de: "Termin", article: "der", plural: "Termine", pluralArticle: "die", type: "noun", level: "A2" },
+    { id: 35, en: "train station", de: "Bahnhof", article: "der", plural: "Bahnhöfe", pluralArticle: "die", type: "noun", level: "A1" },
+    { id: 36, en: "ticket", de: "Fahrkarte", article: "die", plural: "Fahrkarten", pluralArticle: "die", type: "noun", level: "A2" },
+    { id: 37, en: "health", de: "Gesundheit", article: "die", plural: "", pluralArticle: "", type: "noun", level: "B1" },
+    { id: 38, en: "experience", de: "Erfahrung", article: "die", plural: "Erfahrungen", pluralArticle: "die", type: "noun", level: "B1" },
+    { id: 39, en: "important", de: "wichtig", article: "", type: "adjective", level: "A2" },
+    { id: 40, en: "difficult", de: "schwierig", article: "", type: "adjective", level: "A2" }
+  ],
+  sentences: [
+    { id: 1, en: "I drink water.", de: "Ich trinke Wasser.", level: "A1" },
+    { id: 2, en: "She eats an apple.", de: "Sie isst einen Apfel.", level: "A1" },
+    { id: 3, en: "We go to school today.", de: "Wir gehen heute zur Schule.", level: "A1" },
+    { id: 4, en: "I have an appointment tomorrow.", de: "Ich habe morgen einen Termin.", level: "A2" },
+    { id: 5, en: "The ticket is important.", de: "Die Fahrkarte ist wichtig.", level: "A2" },
+    { id: 6, en: "I am learning German because I live here.", de: "Ich lerne Deutsch, weil ich hier wohne.", level: "A2" },
+    { id: 7, en: "Work is difficult, but interesting.", de: "Die Arbeit ist schwierig, aber interessant.", level: "A2" },
+    { id: 8, en: "Health is very important for me.", de: "Gesundheit ist sehr wichtig für mich.", level: "B1" },
+    { id: 9, en: "I have experience with this work.", de: "Ich habe Erfahrung mit dieser Arbeit.", level: "B1" },
+    { id: 10, en: "I missed the train, therefore I am late.", de: "Ich habe den Zug verpasst, deshalb bin ich spät dran.", level: "B1" }
+  ]
+};

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>English > German Practice A1-B1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb orb-one"></div>
+  <div class="bg-orb orb-two"></div>
+
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">A1-B1 English → German</p>
+        <h1>German Practice Trainer</h1>
+      </div>
+      <div class="hero-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" onclick="toggleTheme(event)">☾ Dark</button>
+      </div>
+    </header>
+
+    <section class="stats-grid" aria-label="Practice statistics">
+      <article class="stat-card">
+        <span>Words practised</span>
+        <strong id="wordsPracticed">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>Sentences completed</span>
+        <strong id="sentencesCompleted">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>Difficult words</span>
+        <strong id="difficultWords">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>Today</span>
+        <strong id="todayPractice">0 min</strong>
+      </article>
+    </section>
+
+    <nav class="tabs" aria-label="Trainer tabs">
+      <button class="tab active" data-tab="words">Words</button>
+      <button class="tab" data-tab="sentences">Sentences</button>
+      <button class="tab" data-tab="builder">Sentence Builder</button>
+      <button class="tab" data-tab="difficult">Difficult Words</button>
+      <button class="tab" data-tab="list">Content</button>
+    </nav>
+
+    <section class="filters">
+      <label>Level
+        <select id="levelFilter">
+          <option value="all">All</option>
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+        </select>
+      </label>
+      <button id="resetProgress" class="ghost">Reset practice history</button>
+    </section>
+
+    <section id="words" class="panel active">
+      <h2>Word Practice</h2>
+      <p class="hint">Translate the English word into German. For nouns, the trainer may ask for singular or plural. Include the article when you can, e.g. <b>der Apfel</b> or <b>die Äpfel</b>. Answers without the article are accepted, but marked as “article missing”.</p>
+      <div class="card practice-card">
+        <div class="label">English</div>
+        <div id="wordPrompt" class="prompt">-</div>
+        <input id="wordAnswer" autocomplete="off" placeholder="German answer" />
+        <div class="actions">
+          <button id="checkWord">Check</button>
+          <button id="nextWord" class="secondary">Next</button>
+          <button id="showWord" class="ghost">Show answer</button>
+        </div>
+        <div id="wordFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="sentences" class="panel">
+      <h2>Sentence Translation</h2>
+      <p class="hint">Translate the full English sentence into German.</p>
+      <div class="card practice-card">
+        <div class="label">English</div>
+        <div id="sentencePrompt" class="prompt">-</div>
+        <input id="sentenceAnswer" autocomplete="off" placeholder="German sentence" />
+        <div class="actions">
+          <button id="checkSentence">Check</button>
+          <button id="nextSentence" class="secondary">Next</button>
+          <button id="showSentence" class="ghost">Show answer</button>
+        </div>
+        <div id="sentenceFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="builder" class="panel">
+      <h2>Sentence Builder</h2>
+      <p class="hint">Build the German sentence by clicking the words in the correct order.</p>
+      <div class="card practice-card">
+        <div class="label">English</div>
+        <div id="builderPrompt" class="prompt">-</div>
+        <div id="builtSentence" class="built" aria-label="Built German sentence"></div>
+        <div id="wordBank" class="word-bank"></div>
+        <div class="actions">
+          <button id="checkBuild">Check</button>
+          <button id="undoBuild" class="secondary">Undo</button>
+          <button id="nextBuild" class="secondary">Next</button>
+          <button id="clearBuild" class="ghost">Clear</button>
+        </div>
+        <div id="builderFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="difficult" class="panel">
+      <h2>Difficult Words</h2>
+      <p class="hint">Words appear here after wrong answers. Use this tab to focus on what needs more practice.</p>
+      <div class="search-toolbar">
+        <input id="difficultSearch" type="search" autocomplete="off" placeholder="Search failed words..." aria-label="Search difficult words" />
+      </div>
+      <div class="card">
+        <div id="difficultList" class="content-list empty-state"></div>
+      </div>
+    </section>
+
+    <section id="list" class="panel">
+      <h2>Word List</h2>
+      <div class="search-toolbar">
+        <input id="contentSearch" type="search" autocomplete="off" placeholder="Search words and sentences..." aria-label="Search word list" />
+      </div>
+      <div id="contentList" class="content-list"></div>
+    </section>
+
+    <footer class="app-footer" aria-label="Footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <strong>German Practice Trainer</strong>
+          <span>A1-B1 English → German practice</span>
+        </div>
+        <div class="footer-note">
+          <span>Progress is stored locally in your browser.</span>
+        </div>
+        <div class="footer-credit">
+          Created by Alex Mason
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="wordlist.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
