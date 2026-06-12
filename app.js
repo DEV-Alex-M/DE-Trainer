@@ -4,6 +4,8 @@ let currentWord = null;
 let currentSentence = null;
 let currentBuild = null;
 let currentGrammar = null;
+let currentGoethe = null;
+let currentGoetheDirection = "de-en";
 let selectedGrammarOption = "";
 let builtWords = [];
 let sessionStarted = Date.now();
@@ -19,6 +21,7 @@ function loadProgress() {
     sentences: {},
     builders: {},
     grammars: {},
+    goethe: {},
     practiceByDate: {},
     lastPracticeDate: ""
   };
@@ -160,6 +163,127 @@ function acceptedWordAnswers(word) {
 function fullWordAnswer(word) {
   return word.article ? `${word.article} ${word.de}` : word.de;
 }
+
+function fullGoethePrompt(word) {
+  return word.article ? `${word.article} ${word.de}` : word.de;
+}
+
+function acceptedEnglishAnswers(entry) {
+  return String(entry.en || "")
+    .split(/[;/,]/)
+    .map(value => normalize(value))
+    .filter(Boolean);
+}
+
+function acceptedGermanAnswers(entry) {
+  const full = fullGoethePrompt(entry);
+  const answers = [full];
+  if (entry.article) answers.push(entry.de);
+  return answers.map(normalize).filter(Boolean);
+}
+
+function goetheAnswerForDirection(entry, direction) {
+  return direction === "en-de" ? fullGoethePrompt(entry) : entry.en;
+}
+
+function goethePromptForDirection(entry, direction) {
+  return direction === "en-de" ? entry.en : fullGoethePrompt(entry);
+}
+
+function goetheDirectionLabel(direction) {
+  return direction === "en-de" ? "English → German" : "German → English";
+}
+
+function getGoetheDirectionForQuestion() {
+  const selected = $("goetheDirection") ? $("goetheDirection").value : "de-en";
+  if (selected === "mixed") return Math.random() < 0.5 ? "de-en" : "en-de";
+  return selected;
+}
+
+function goetheEntriesForPractice() {
+  return filtered(data.goetheWords || []).filter(entry => entry.de && entry.en);
+}
+
+function recordGoethe(entry, correct, direction = currentGoetheDirection) {
+  const id = `${entry.id}:${direction}`;
+  const item = progress.goethe[id] || { correct: 0, wrong: 0, lastSeen: "", direction };
+  correct ? item.correct += 1 : item.wrong += 1;
+  item.lastSeen = todayKey();
+  item.direction = direction;
+  progress.goethe[id] = item;
+  markPracticeMinute();
+  saveProgress();
+}
+
+function showGoethe() {
+  const entries = goetheEntriesForPractice();
+  currentGoethe = pick(entries);
+  currentGoetheDirection = getGoetheDirectionForQuestion();
+  if (!currentGoethe) {
+    if ($("goethePrompt")) $("goethePrompt").textContent = "No Goethe vocabulary available.";
+    return;
+  }
+
+  const isEnglishToGerman = currentGoetheDirection === "en-de";
+  $("goethePromptLabel").textContent = isEnglishToGerman ? "English" : "German";
+  $("goethePrompt").textContent = goethePromptForDirection(currentGoethe, currentGoetheDirection);
+  $("goetheMeta").textContent = `${currentGoethe.level} • ${goetheDirectionLabel(currentGoetheDirection)} • ${currentGoethe.source || "Goethe word list"}`;
+  $("goetheAnswer").value = "";
+  $("goetheAnswer").disabled = false;
+  $("goetheAnswer").placeholder = isEnglishToGerman ? "German answer" : "English meaning";
+  $("goetheFeedback").textContent = "";
+  $("goetheFeedback").className = "feedback";
+}
+
+function checkGoethe() {
+  if (!currentGoethe) return;
+  const rawAnswer = $("goetheAnswer").value.trim();
+  const answer = normalize(rawAnswer);
+  const feedback = $("goetheFeedback");
+
+  if (!rawAnswer) {
+    feedback.textContent = "Type an answer first.";
+    feedback.className = "feedback warn";
+    return;
+  }
+
+  if (currentGoetheDirection === "en-de") {
+    const fullAnswerText = fullGoethePrompt(currentGoethe);
+    const fullAnswer = normalize(fullAnswerText);
+    const possible = acceptedGermanAnswers(currentGoethe);
+    const isFullyCorrect = answer === fullAnswer;
+    const isAcceptedWithoutArticle = currentGoethe.article && answer === normalize(currentGoethe.de);
+    const isCorrect = isFullyCorrect || possible.includes(answer);
+    const capitalizationIssue = isCorrect && hasCapitalizationIssue(rawAnswer, isAcceptedWithoutArticle ? currentGoethe.de : fullAnswerText);
+
+    if (isFullyCorrect && !capitalizationIssue) {
+      feedback.textContent = `Correct: ${fullAnswerText}`;
+      feedback.className = "feedback good";
+    } else if (capitalizationIssue) {
+      feedback.innerHTML = `Correct word, but check capitalization.<br><br><b>Your answer:</b> ${escapeHtml(rawAnswer)}<br><b>Correct:</b> ${escapeHtml(fullAnswerText)}<br>${escapeHtml(nounCapitalizationReminder())}`;
+      feedback.className = "feedback warn";
+    } else if (isAcceptedWithoutArticle) {
+      feedback.textContent = `Correct word, article missing: ${fullAnswerText}`;
+      feedback.className = "feedback warn";
+    } else {
+      feedback.textContent = `Not quite. Correct: ${fullAnswerText}`;
+      feedback.className = "feedback bad";
+    }
+    recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
+    $("goetheAnswer").disabled = true;
+    return;
+  }
+
+  const accepted = acceptedEnglishAnswers(currentGoethe);
+  const isCorrect = accepted.includes(answer);
+  feedback.textContent = isCorrect
+    ? `Correct: ${currentGoethe.en}`
+    : `Not quite. Correct: ${currentGoethe.en}`;
+  feedback.className = isCorrect ? "feedback good" : "feedback bad";
+  recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
+  $("goetheAnswer").disabled = true;
+}
+
 
 function recordWord(word, correct, articleMissing = false, articleWrong = false, capitalizationMistake = false) {
   const id = String(word.id);
@@ -664,7 +788,8 @@ function difficultWords() {
 }
 
 function renderStats() {
-  const wordTotal = Object.values(progress.words).reduce((sum, item) => sum + item.correct + item.wrong, 0);
+  const wordTotal = Object.values(progress.words).reduce((sum, item) => sum + item.correct + item.wrong, 0)
+    + Object.values(progress.goethe || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0);
   const sentenceTotal = Object.values(progress.sentences).reduce((sum, item) => sum + item.correct + item.wrong, 0)
     + Object.values(progress.builders).reduce((sum, item) => sum + item.correct + item.wrong, 0)
     + Object.values(progress.grammars || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0);
@@ -763,6 +888,7 @@ function init() {
   renderStats();
   renderDifficultList();
   showWord();
+  showGoethe();
   showSentence();
   showBuilder();
   showGrammar();
@@ -771,6 +897,16 @@ function init() {
   $("nextWord").addEventListener("click", showWord);
   $("showWord").addEventListener("click", () => $("wordFeedback").textContent = fullWordAnswer(currentWord));
   $("wordAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkWord(); });
+
+  $("checkGoethe").addEventListener("click", checkGoethe);
+  $("nextGoethe").addEventListener("click", showGoethe);
+  $("showGoethe").addEventListener("click", () => {
+    if (!currentGoethe) return;
+    $("goetheFeedback").textContent = goetheAnswerForDirection(currentGoethe, currentGoetheDirection);
+  });
+  $("goetheAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkGoethe(); });
+  const goetheDirection = $("goetheDirection");
+  if (goetheDirection) goetheDirection.addEventListener("change", showGoethe);
 
   $("checkSentence").addEventListener("click", checkSentence);
   $("nextSentence").addEventListener("click", showSentence);
@@ -789,6 +925,7 @@ function init() {
 
   function refreshPracticeAfterFilterChange() {
     showWord();
+    showGoethe();
     showSentence();
     showBuilder();
     showGrammar();
@@ -818,6 +955,7 @@ function init() {
     progress.sentences = {};
     progress.builders = {};
     progress.grammars = {};
+    progress.goethe = {};
     progress.practiceByDate = {};
     progress.lastPracticeDate = "";
     saveProgress();

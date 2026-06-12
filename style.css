@@ -430,3 +430,22 @@ input:disabled + .special-char-row .char-btn {
   font-size: 13px;
   font-weight: 850;
 }
+
+
+/* Goethe direction controls */
+.mode-controls {
+  margin: 0 0 16px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mode-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}

@@ -43,6 +43,7 @@
 
     <nav class="tabs" aria-label="Trainer tabs">
       <button class="tab active" data-tab="words">Words</button>
+      <button class="tab" data-tab="goethe">Goethe Vocabulary</button>
       <button class="tab" data-tab="sentences">Sentences</button>
       <button class="tab" data-tab="builder">Sentence Builder</button>
       <button class="tab" data-tab="grammar">Grammar</button>
@@ -98,6 +99,45 @@
           <button id="showWord" class="ghost">Show answer</button>
         </div>
         <div id="wordFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+
+
+
+    <section id="goethe" class="panel">
+      <h2>Goethe Vocabulary Practice</h2>
+      <p class="hint">Practise the Goethe vocabulary list in either direction. EN → DE expects the German word; for nouns, include the article when you can.</p>
+      <div class="mode-controls">
+        <label>Direction
+          <select id="goetheDirection">
+            <option value="de-en">German → English</option>
+            <option value="en-de">English → German</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </label>
+      </div>
+      <div class="card practice-card">
+        <div id="goethePromptLabel" class="label">German</div>
+        <div id="goethePrompt" class="prompt">-</div>
+        <div id="goetheMeta" class="hint"></div>
+        <input id="goetheAnswer" autocomplete="off" placeholder="English meaning" />
+        <div class="special-char-row" aria-label="German special characters for Goethe answer">
+          <span>Insert:</span>
+          <button type="button" class="char-btn" data-insert="ä" data-target="goetheAnswer">ä</button>
+          <button type="button" class="char-btn" data-insert="ö" data-target="goetheAnswer">ö</button>
+          <button type="button" class="char-btn" data-insert="ü" data-target="goetheAnswer">ü</button>
+          <button type="button" class="char-btn" data-insert="Ä" data-target="goetheAnswer">Ä</button>
+          <button type="button" class="char-btn" data-insert="Ö" data-target="goetheAnswer">Ö</button>
+          <button type="button" class="char-btn" data-insert="Ü" data-target="goetheAnswer">Ü</button>
+          <button type="button" class="char-btn" data-insert="ß" data-target="goetheAnswer">ß</button>
+        </div>
+        <div class="actions">
+          <button id="checkGoethe">Check</button>
+          <button id="nextGoethe" class="secondary">Next</button>
+          <button id="showGoethe" class="ghost">Show answer</button>
+        </div>
+        <div id="goetheFeedback" class="feedback"></div>
       </div>
     </section>
 
