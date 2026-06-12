@@ -105,6 +105,95 @@ function bindThemeToggle() {
   toggle.addEventListener("click", toggleTheme);
 }
 
+
+
+function setSpeechVisible(buttonId, visible) {
+  const button = $(buttonId);
+  if (!button) return;
+  button.hidden = !visible;
+  button.style.display = visible ? "" : "none";
+}
+
+function hideAnswerSpeechButtons() {
+  [
+    "speakWordGerman",
+    "speakSentenceGerman",
+    "speakBuilderGerman",
+    "speakGrammarGerman",
+    "speakVerbGerman"
+  ].forEach(id => setSpeechVisible(id, false));
+}
+
+function showResolvedSpeechButton(buttonId) {
+  setSpeechVisible(buttonId, true);
+}
+
+function cleanGermanSpeechText(value) {
+  return String(value || "")
+    .replace(/___/g, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function germanTextForSpeech(kind) {
+  if (kind === "word" && currentWord) return fullWordAnswer(currentWord);
+  if (kind === "goethe" && currentGoethe) {
+    const german = currentGoethe.article ? `${currentGoethe.article} ${currentGoethe.de}` : currentGoethe.de;
+    return german;
+  }
+  if (kind === "sentence" && currentSentence) return currentSentence.de;
+  if (kind === "builder" && currentBuild) return currentBuild.de;
+  if (kind === "grammar" && currentGrammar) return fullGrammarAnswer(currentGrammar);
+  if (kind === "verb" && currentVerb) return displayVerbAnswer(currentVerb);
+  return "";
+}
+
+function speakGermanText(text) {
+  const clean = cleanGermanSpeechText(text);
+  if (!clean) return;
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+    alert("Text-to-speech is not supported in this browser.");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(clean);
+  utterance.lang = "de-DE";
+  utterance.rate = 0.88;
+  utterance.pitch = 1;
+
+  const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+  const germanVoice = voices.find(voice => /^de[-_]/i.test(voice.lang || ""));
+  if (germanVoice) utterance.voice = germanVoice;
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function bindSpeechButtons() {
+  const bindings = {
+    speakWordGerman: "word",
+    speakGoetheGerman: "goethe",
+    speakSentenceGerman: "sentence",
+    speakBuilderGerman: "builder",
+    speakGrammarGerman: "grammar",
+    speakVerbGerman: "verb"
+  };
+
+  Object.entries(bindings).forEach(([buttonId, kind]) => {
+    const button = $(buttonId);
+    if (!button) return;
+    button.addEventListener("click", () => speakGermanText(germanTextForSpeech(kind)));
+  });
+
+  hideAnswerSpeechButtons();
+  setSpeechVisible("speakGoetheGerman", false);
+
+  if ("speechSynthesis" in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+}
+
 function normalize(value) {
   return value
     .toLowerCase()
@@ -269,6 +358,7 @@ function showGoethe() {
   $("goetheFeedback").textContent = "";
   $("goetheFeedback").className = "feedback";
   setCheckLocked("checkGoethe", false);
+  setSpeechVisible("speakGoetheGerman", currentGoetheDirection === "de-en");
 }
 
 function checkGoethe() {
@@ -320,6 +410,7 @@ function checkGoethe() {
     recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
     $("goetheAnswer").disabled = true;
     setCheckLocked("checkGoethe", true);
+    showResolvedSpeechButton("speakGoetheGerman");
     return;
   }
 
@@ -343,6 +434,7 @@ function checkGoethe() {
   recordGoethe(currentGoethe, isCorrect, currentGoetheDirection);
   $("goetheAnswer").disabled = true;
   setCheckLocked("checkGoethe", true);
+  showResolvedSpeechButton("speakGoetheGerman");
 }
 
 function revealGoethe() {
@@ -366,6 +458,7 @@ function revealGoethe() {
   recordGoethe(currentGoethe, false, currentGoetheDirection);
   if (input) input.disabled = true;
   setCheckLocked("checkGoethe", true);
+  showResolvedSpeechButton("speakGoetheGerman");
 }
 
 
@@ -451,6 +544,7 @@ function showWord() {
   $("wordFeedback").textContent = "";
   $("wordFeedback").className = "feedback";
   setCheckLocked("checkWord", false);
+  setSpeechVisible("speakWordGerman", false);
 }
 
 function splitArticleAnswer(value) {
@@ -537,6 +631,7 @@ function checkWord() {
   }
   input.disabled = true;
   setCheckLocked("checkWord", true);
+  showResolvedSpeechButton("speakWordGerman");
 }
 
 function revealWord() {
@@ -560,6 +655,7 @@ function revealWord() {
   recordWord(currentWord, false, false, false, false);
   if (input) input.disabled = true;
   setCheckLocked("checkWord", true);
+  showResolvedSpeechButton("speakWordGerman");
 }
 
 function sentenceStyleText(sentence) {
@@ -606,6 +702,7 @@ function showSentence() {
   $("sentenceFeedback").textContent = "";
   $("sentenceFeedback").className = "feedback";
   setCheckLocked("checkSentence", false);
+  setSpeechVisible("speakSentenceGerman", false);
 }
 
 function checkSentence() {
@@ -639,6 +736,7 @@ function checkSentence() {
   recordSentence("sentences", currentSentence, isCorrect);
   $("sentenceAnswer").disabled = true;
   setCheckLocked("checkSentence", true);
+  showResolvedSpeechButton("speakSentenceGerman");
 }
 
 function revealSentence() {
@@ -661,6 +759,7 @@ function revealSentence() {
   recordSentence("sentences", currentSentence, false);
   if (input) input.disabled = true;
   setCheckLocked("checkSentence", true);
+  showResolvedSpeechButton("speakSentenceGerman");
 }
 
 function shuffle(array) {
@@ -682,6 +781,7 @@ function showBuilder() {
   $("builderFeedback").textContent = "";
   $("builderFeedback").className = "feedback";
   setCheckLocked("checkBuild", false);
+  setSpeechVisible("speakBuilderGerman", false);
   const words = shuffle(currentBuild.de.replace(/[.!?]/g, "").split(" "));
   $("wordBank").innerHTML = "";
   words.forEach((word, index) => {
@@ -722,6 +822,7 @@ function checkBuild() {
   }
   recordSentence("builders", currentBuild, isCorrect);
   setCheckLocked("checkBuild", true);
+  showResolvedSpeechButton("speakBuilderGerman");
 }
 
 function recordGrammar(grammar, correct) {
@@ -768,6 +869,7 @@ function showGrammar() {
   feedback.textContent = "";
   feedback.className = "feedback";
   setCheckLocked("checkGrammar", false);
+  setSpeechVisible("speakGrammarGerman", false);
   input.value = "";
   input.disabled = false;
   options.innerHTML = "";
@@ -1000,6 +1102,7 @@ function checkGrammar() {
   $("grammarAnswer").disabled = true;
   document.querySelectorAll(".grammar-option").forEach(button => button.disabled = true);
   setCheckLocked("checkGrammar", true);
+  showResolvedSpeechButton("speakGrammarGerman");
 }
 
 function revealGrammar() {
@@ -1023,6 +1126,7 @@ function revealGrammar() {
   if (input) input.disabled = true;
   document.querySelectorAll(".grammar-option").forEach(button => button.disabled = true);
   setCheckLocked("checkGrammar", true);
+  showResolvedSpeechButton("speakGrammarGerman");
 }
 
 function wordStats(word) {
@@ -1128,6 +1232,7 @@ function showVerb() {
   feedback.textContent = "";
   feedback.className = "feedback";
   setCheckLocked("checkVerb", false);
+  setSpeechVisible("speakVerbGerman", false);
 }
 
 
@@ -1192,6 +1297,7 @@ function checkVerb() {
   recordVerb(currentVerb, isCorrect);
   input.disabled = true;
   setCheckLocked("checkVerb", true);
+  showResolvedSpeechButton("speakVerbGerman");
 }
 
 function revealVerb() {
@@ -1215,6 +1321,7 @@ function revealVerb() {
   recordVerb(currentVerb, false);
   if (input) input.disabled = true;
   setCheckLocked("checkVerb", true);
+  showResolvedSpeechButton("speakVerbGerman");
 }
 
 function searchMatches(text, query) {
@@ -1310,6 +1417,7 @@ function init() {
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   applyTheme(savedTheme || (prefersDark ? "dark" : "light"));
   bindThemeToggle();
+  bindSpeechButtons();
 
   bindSpecialCharacterButtons();
   bindTabs();
