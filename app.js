@@ -7,6 +7,7 @@ let currentGrammar = null;
 let selectedGrammarOption = "";
 let builtWords = [];
 let sessionStarted = Date.now();
+const lastPickedByMode = {};
 
 const $ = (id) => document.getElementById(id);
 
@@ -99,9 +100,19 @@ function populateCategoryFilter() {
   select.value = allCategories().includes(current) ? current : "all";
 }
 
-function pick(items) {
+function pick(items, mode = "default") {
   const list = filtered(items);
-  return list[Math.floor(Math.random() * list.length)] || items[0];
+  const source = list.length ? list : items;
+  if (!source || !source.length) return null;
+
+  const lastId = lastPickedByMode[mode];
+  const candidates = source.length > 1
+    ? source.filter(item => String(item.id) !== String(lastId))
+    : source;
+
+  const chosen = candidates[Math.floor(Math.random() * candidates.length)] || source[0];
+  lastPickedByMode[mode] = chosen && chosen.id;
+  return chosen;
 }
 
 function grammarFocusMatches(item) {
@@ -147,7 +158,7 @@ function recordSentence(collection, sentence, correct) {
 }
 
 function showWord() {
-  currentWord = pick(data.words);
+  currentWord = pick(data.words, "words");
   $("wordPrompt").textContent = currentWord.en;
   $("wordAnswer").value = "";
   $("wordAnswer").disabled = false;
@@ -200,7 +211,7 @@ function checkWord() {
 }
 
 function showSentence() {
-  currentSentence = pick(data.sentences);
+  currentSentence = pick(data.sentences, "sentences");
   $("sentencePrompt").textContent = currentSentence.en;
   $("sentenceAnswer").value = "";
   $("sentenceAnswer").disabled = false;
@@ -232,7 +243,7 @@ function renderBuilt() {
 }
 
 function showBuilder() {
-  currentBuild = pick(data.sentences);
+  currentBuild = pick(data.sentences, "builder");
   builtWords = [];
   $("builderPrompt").textContent = currentBuild.en;
   $("builderFeedback").textContent = "";
@@ -277,7 +288,14 @@ function recordGrammar(grammar, correct) {
 }
 
 function showGrammar() {
-  currentGrammar = filteredGrammarItems()[Math.floor(Math.random() * filteredGrammarItems().length)] || (data.grammar || [])[0];
+  const grammarItems = filteredGrammarItems();
+  const grammarSource = grammarItems.length ? grammarItems : (data.grammar || []);
+  const lastId = lastPickedByMode.grammar;
+  const candidates = grammarSource.length > 1
+    ? grammarSource.filter(item => String(item.id) !== String(lastId))
+    : grammarSource;
+  currentGrammar = candidates[Math.floor(Math.random() * candidates.length)] || grammarSource[0] || null;
+  lastPickedByMode.grammar = currentGrammar && currentGrammar.id;
   selectedGrammarOption = "";
   const prompt = $("grammarPrompt");
   const label = $("grammarCaseLabel");
