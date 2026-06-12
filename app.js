@@ -5,6 +5,7 @@ let currentSentence = null;
 let currentBuild = null;
 let currentGrammar = null;
 let currentGoethe = null;
+let currentVerb = null;
 let currentGoetheDirection = "de-en";
 let selectedGrammarOption = "";
 let builtWords = [];
@@ -22,6 +23,7 @@ function loadProgress() {
     builders: {},
     grammars: {},
     goethe: {},
+    verbs: {},
     practiceByDate: {},
     lastPracticeDate: ""
   };
@@ -115,7 +117,8 @@ function allCategories() {
   const values = [
     ...data.words.map(item => item.category),
     ...data.sentences.map(item => item.category),
-    ...(data.grammar || []).map(item => item.category)
+    ...(data.grammar || []).map(item => item.category),
+    ...(data.verbConjugations || []).map(item => item.category)
   ].filter(Boolean);
   return [...new Set(values)].sort((a, b) => a.localeCompare(b));
 }
@@ -436,7 +439,7 @@ function checkSentence() {
   const answer = normalize(rawAnswer);
   const correct = normalize(currentSentence.de);
   const feedback = $("sentenceFeedback");
-  const isCorrect = answer === correct;
+  const isCorrect = answer === correct || answer === fullCorrect;
   const capitalizationIssue = isCorrect && hasCapitalizationIssue(rawAnswer, currentSentence.de);
 
   if (isCorrect && capitalizationIssue) {
@@ -789,7 +792,8 @@ function difficultWords() {
 
 function renderStats() {
   const wordTotal = Object.values(progress.words).reduce((sum, item) => sum + item.correct + item.wrong, 0)
-    + Object.values(progress.goethe || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0);
+    + Object.values(progress.goethe || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0)
+    + Object.values(progress.verbs || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0);
   const sentenceTotal = Object.values(progress.sentences).reduce((sum, item) => sum + item.correct + item.wrong, 0)
     + Object.values(progress.builders).reduce((sum, item) => sum + item.correct + item.wrong, 0)
     + Object.values(progress.grammars || {}).reduce((sum, item) => sum + item.correct + item.wrong, 0);
@@ -797,6 +801,107 @@ function renderStats() {
   $("sentencesCompleted").textContent = sentenceTotal;
   $("difficultWords").textContent = difficultWords().length;
   $("todayPractice").textContent = `${progress.practiceByDate[todayKey()] || 0} min`;
+}
+
+function filteredVerbConjugations() {
+  const tense = $("verbTenseFilter") ? $("verbTenseFilter").value : "all";
+  return filtered(data.verbConjugations || []).filter(item => tense === "all" || item.tense === tense);
+}
+
+function recordVerb(verb, correct) {
+  const id = String(verb.id);
+  const item = progress.verbs[id] || { correct: 0, wrong: 0, lastSeen: "" };
+  correct ? item.correct += 1 : item.wrong += 1;
+  item.lastSeen = todayKey();
+  progress.verbs[id] = item;
+  markPracticeMinute();
+  saveProgress();
+}
+
+function verbPromptText(verb) {
+  return `${verb.verb} → ${verb.tenseLabel || verb.tense} → ${verb.person} form`;
+}
+
+function showVerb() {
+  const items = filteredVerbConjugations();
+  currentVerb = pick(items.length ? items : (data.verbConjugations || []), "verbs");
+  const prompt = $("verbPrompt");
+  const meta = $("verbMeta");
+  const input = $("verbAnswer");
+  const feedback = $("verbFeedback");
+
+  if (!currentVerb) {
+    if (prompt) prompt.textContent = "No verb conjugation questions available.";
+    return;
+  }
+
+  prompt.textContent = currentVerb.verb;
+  if (meta) {
+    meta.textContent = `${currentVerb.meaning || "verb"} • ${currentVerb.tenseLabel || currentVerb.tense} • ${currentVerb.person} form • ${currentVerb.level}`;
+    meta.style.display = "block";
+  }
+  input.value = "";
+  input.disabled = false;
+  feedback.textContent = "";
+  feedback.className = "feedback";
+}
+
+
+function verbPersonPronouns(person) {
+  const raw = String(person || "").trim();
+  if (raw === "er/sie/es") return ["er", "sie", "es"];
+  if (raw === "sie/Sie") return ["sie", "Sie"];
+  return raw ? [raw] : [];
+}
+
+function acceptedVerbAnswers(verb) {
+  const answer = String(verb.answer || "").trim();
+  const answers = [answer];
+  verbPersonPronouns(verb.person).forEach(pronoun => {
+    answers.push(`${pronoun} ${answer}`);
+  });
+  return [...new Set(answers.map(normalize))];
+}
+
+function displayVerbAnswer(verb) {
+  const pronouns = verbPersonPronouns(verb.person);
+  const answer = String(verb.answer || "").trim();
+  if (!pronouns.length) return answer;
+  if (pronouns.length === 1) return `${pronouns[0]} ${answer}`;
+  return `${pronouns.join(" / ")} ${answer}`;
+}
+
+function checkVerb() {
+  if (!currentVerb) return;
+  const input = $("verbAnswer");
+  const rawAnswer = input.value;
+  const answer = normalize(rawAnswer);
+  const feedback = $("verbFeedback");
+
+  if (!rawAnswer.trim()) {
+    feedback.textContent = "Type an answer first.";
+    feedback.className = "feedback warn";
+    return;
+  }
+
+  const isCorrect = acceptedVerbAnswers(currentVerb).includes(answer);
+  const shownAnswer = displayVerbAnswer(currentVerb);
+  if (isCorrect) {
+    feedback.innerHTML = `Correct: ${escapeHtml(shownAnswer)}`;
+    feedback.className = "feedback good";
+  } else {
+    feedback.innerHTML = `Not quite.<br><br><b>${escapeHtml(verbPromptText(currentVerb))}</b><br><b>Correct:</b> ${escapeHtml(shownAnswer)}<br><span class="grammar-feedback-note">You can type only the verb form or include a matching pronoun.</span>`;
+    feedback.className = "feedback bad";
+  }
+  recordVerb(currentVerb, isCorrect);
+  input.disabled = true;
+}
+
+function revealVerb() {
+  if (!currentVerb) return;
+  const feedback = $("verbFeedback");
+  feedback.innerHTML = `<b>${escapeHtml(verbPromptText(currentVerb))}</b><br>Correct: ${escapeHtml(displayVerbAnswer(currentVerb))}<br><span class="grammar-feedback-note">You can type only the verb form or include a matching pronoun.</span>`;
+  feedback.className = "feedback good";
 }
 
 function searchMatches(text, query) {
@@ -841,6 +946,11 @@ function renderContentList() {
     const text = `${grammar.level} ${grammar.case} ${grammar.prompt} ${grammar.answer} ${grammar.context || ""} grammar article dative accusative nominative preposition location movement ${grammar.category || ""} ${grammar.grammarTopic || ""}`;
     if (!searchMatches(text, query)) return;
     rows.push(`<div class="row"><span>${grammar.level}</span><span>${grammar.prompt}</span><span>${grammar.answer}</span><span>${grammar.case} • ${grammar.category || "-"}</span></div>`);
+  });
+  (data.verbConjugations || []).forEach(verb => {
+    const text = `${verb.level} ${verb.verb} ${verb.meaning || ""} ${verb.tenseLabel || verb.tense} ${verb.person} ${verb.answer} verb conjugation ${verb.category || ""}`;
+    if (!searchMatches(text, query)) return;
+    rows.push(`<div class="row"><span>${verb.level}</span><span>${verb.verb} → ${verb.tenseLabel || verb.tense} → ${verb.person}</span><span>${verb.answer}</span><span>verb conjugation</span></div>`);
   });
   $("contentList").innerHTML = rows.join("");
 }
@@ -892,6 +1002,7 @@ function init() {
   showSentence();
   showBuilder();
   showGrammar();
+  showVerb();
 
   $("checkWord").addEventListener("click", checkWord);
   $("nextWord").addEventListener("click", showWord);
@@ -923,12 +1034,18 @@ function init() {
   $("showGrammar").addEventListener("click", revealGrammar);
   $("grammarAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkGrammar(); });
 
+  $("checkVerb").addEventListener("click", checkVerb);
+  $("nextVerb").addEventListener("click", showVerb);
+  $("showVerb").addEventListener("click", revealVerb);
+  $("verbAnswer").addEventListener("keydown", e => { if (e.key === "Enter") checkVerb(); });
+
   function refreshPracticeAfterFilterChange() {
     showWord();
     showGoethe();
     showSentence();
     showBuilder();
     showGrammar();
+    showVerb();
     renderContentList();
     renderDifficultList();
   }
@@ -944,6 +1061,10 @@ function init() {
     showGrammar();
     renderContentList();
   });
+  if ($("verbTenseFilter")) $("verbTenseFilter").addEventListener("change", () => {
+    showVerb();
+    renderContentList();
+  });
 
   if ($("contentSearch")) $("contentSearch").addEventListener("input", renderContentList);
   if ($("difficultSearch")) $("difficultSearch").addEventListener("input", renderDifficultList);
@@ -956,6 +1077,7 @@ function init() {
     progress.builders = {};
     progress.grammars = {};
     progress.goethe = {};
+    progress.verbs = {};
     progress.practiceByDate = {};
     progress.lastPracticeDate = "";
     saveProgress();

@@ -47,6 +47,7 @@
       <button class="tab" data-tab="sentences">Sentences</button>
       <button class="tab" data-tab="builder">Sentence Builder</button>
       <button class="tab" data-tab="grammar">Grammar</button>
+      <button class="tab" data-tab="verbs">Verb Conjugation</button>
       <button class="tab" data-tab="difficult">Difficult Words</button>
       <button class="tab" data-tab="list">Content</button>
     </nav>
@@ -223,6 +224,44 @@
           <button id="showGrammar" class="ghost">Show answer</button>
         </div>
         <div id="grammarFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+
+    <section id="verbs" class="panel">
+      <h2>Verb Conjugation</h2>
+      <p class="hint">Conjugate the listed German verb for the requested tense and person. For perfect tense, type the full helper + participle form, e.g. <b>hast gehabt</b>.</p>
+      <div class="mode-controls">
+        <label>Tense focus
+          <select id="verbTenseFilter">
+            <option value="all">All tenses</option>
+            <option value="present">Present</option>
+            <option value="preterite">Simple past / Präteritum</option>
+            <option value="perfect">Perfect / Perfekt</option>
+          </select>
+        </label>
+      </div>
+      <div class="card practice-card">
+        <div class="label">German verb</div>
+        <div id="verbPrompt" class="prompt">-</div>
+        <div id="verbMeta" class="grammar-context"></div>
+        <input id="verbAnswer" autocomplete="off" placeholder="Conjugated form" />
+        <div class="special-char-row" aria-label="German special characters for verb answer">
+          <span>Insert:</span>
+          <button type="button" class="char-btn" data-insert="ä" data-target="verbAnswer">ä</button>
+          <button type="button" class="char-btn" data-insert="ö" data-target="verbAnswer">ö</button>
+          <button type="button" class="char-btn" data-insert="ü" data-target="verbAnswer">ü</button>
+          <button type="button" class="char-btn" data-insert="Ä" data-target="verbAnswer">Ä</button>
+          <button type="button" class="char-btn" data-insert="Ö" data-target="verbAnswer">Ö</button>
+          <button type="button" class="char-btn" data-insert="Ü" data-target="verbAnswer">Ü</button>
+          <button type="button" class="char-btn" data-insert="ß" data-target="verbAnswer">ß</button>
+        </div>
+        <div class="actions">
+          <button id="checkVerb">Check</button>
+          <button id="nextVerb" class="secondary">Next</button>
+          <button id="showVerb" class="ghost">Show answer</button>
+        </div>
+        <div id="verbFeedback" class="feedback"></div>
       </div>
     </section>
 
